@@ -1,0 +1,662 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin = 1in]{geometry}
+\usepackage{graphicx}              
+\usepackage{amsmath}               
+\usepackage{amsfonts}              
+\usepackage{amsthm}                
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{url}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{authblk}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows}
+
+
+
+\hypersetup{
+	unicode = true,
+	colorlinks = true,
+	citecolor = blue,
+	filecolor = black,
+	linkcolor = black,
+	urlcolor = black,
+	pdfstartview = {FitH},
+}
+
+% theorem environments
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{remark}{Remark}
+\newtheorem{note}[theorem]{Note}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\algsetup{linenodelimiter=.}
+
+\newcommand{\wrt}{\vdash} 
+\newcommand{\ang}[1]{\langle#1\rangle}
+\newcommand{\abs}[1]{\left\vert#1\right\vert}
+\newcommand{\dual}[1]{\overline{#1}}
+\newcommand{\mapsfrom}{\ensuremath{\reflectbox{$\mapsto$}}}
+\newcommand{\tildO}{\tilde{O}}
+
+% roman numerals
+\newcommand{\romnum}[1]{\romannumeral #1}
+\newcommand{\Romnum}[1]{\uppercase\expandafter{\romannumeral #1}}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\comment}[2][Note]{\textcolor{green}{(#1): #2}}
+
+\DeclareMathOperator{\fieldchar}{char} % characteristic of a field
+\DeclareMathOperator{\ringofend}{End} % endomorphism ring
+\DeclareMathOperator{\trace}{Tr} % finite field trace
+\DeclareMathOperator{\gal}{Gal} % Galois group
+\DeclareMathOperator{\order}{ord} % order of an element
+\DeclareMathOperator{\lcm}{lcm} % least common multiple
+\DeclareMathOperator{\divisor}{div} % divisor on a curve
+\DeclareMathOperator{\supp}{supp} % support of a divisor
+\DeclareMathOperator{\norm}{N} % norm
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\minpoly}{minpoly}
+\DeclareMathOperator{\loglog}{loglog}
+\DeclareMathOperator{\rev}{rev}
+\DeclareMathOperator{\Hom}{Hom}
+
+\def\Q{\ensuremath{\mathbb{Q}}}
+\def\N{\ensuremath{\mathbb{N}}}
+\def\R{\ensuremath{\mathbb{R}}}
+\def\Z{\ensuremath{\mathbb{Z}}}
+\def\F{\ensuremath{\mathbb{F}}}
+\def\P{\ensuremath{\mathbb{P}}}
+\def\MM{\ensuremath{\mathsf{M}}}
+\def\CC{\ensuremath{\mathsf{C}}}
+\def\euler{\ensuremath{\varphi}}
+
+\setlength{\parindent}{0in}
+
+\title{On Division Polynomials and Supersingularity}
+
+\author[1]{Javad Doliskani}
+\affil[1]{\small Institute for Quantum Computing, University of Waterloo}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	\noindent For an elliptic curve $E$ over a finite field $\F_q$, where $q$ ia a prime power, we 
+	propose new algorithms for testing the supersingularity of $E$. Our algorithms are based on the 
+	properties of the $p$-th division polynomial of $E$. In particular, we give an efficient 
+	algorithm for the Polynomial Identity Testing (PIT) problem for the case of $p$-th division 
+	polynomials.
+	
+	\vspace*{1cm}
+	\noindent\textbf{Key words:} Division polynomial, Polynomial Identity Testing, elliptic curves
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+\label{sec:intro}
+
+Recent cryptographic initiatives based on supersingular elliptic curves have attracted considerable 
+attention \cite{Jao2011, Jao2014, Charles2009}. In particular, the underlying security assumption 
+in such constructions is the hardness of computing isogenies between two curves. Various attempts 
+on solving the \textit{Supersingular Isogeny Problem} has led to a more extensive study of 
+supersingular elliptic curves. One of the interesting algorithmic questions about an elliptic curve 
+is to efficiently decide weather it is ordinary or supersingular. In this paper, we propose 
+efficient solutions for this question.
+
+An elliptic curve $E / \F_q$ is supersingular if its Hasse invariant is zero, and ordinary 
+otherwise. The Hasse invariant is said to be zero if the map $\pi^*: H^1(E, \mathscr{O}_E) 
+\rightarrow H^1(E, \mathscr{O}_E)$ induced by the Frobenius $\pi: E \rightarrow E$ is zero. Other 
+equivalent definitions of supersingularity can be derived from this one. For example, given the 
+short Weierstrass equation $y^2 = x^3 + ax + b$ of $E$, the Hasse invariant is zero if and only if 
+the coefficient of $x^{p - 1}$ in $(x^3 + ax + b)^{(p - 1) / 2}$ is zero. One of the more usual 
+definitions of supersingularity is based on the $p$-torsion subgroup $E[p]$ of $E$. If $E[p] = 0$ 
+(equivalently $E[p^n] = 0$) then $E$ is supersingular. See \cite{Husemoeller1987} for an 
+introduction to elliptic curves and other definitions for supersingulariy. 
+
+It can be shown that the $j$-invariants of all supersingular elliptic curves $E / \overline{\F_p}$ 
+reside in the quadratic extension $\F_q$. Since isomorphism classes of elliptic curves are 
+uniquely determined by their $j$-invariant, it follows that every supersigular elliptic curve can 
+be defined over $\F_q$. So for the rest of this paper we assume $\F_q = \F_{p^2}$. 
+
+Given $E / \F_q$, an obvious algorithm to determine whether $E$ is ordinary or supersingular is to 
+do the exponentiation above and check the coefficient of $x^{p - 1}$. Denote by $\MM(n)$ the cost 
+of multiplying two polynomials of degree $n$ over $\F_q$ where the unit cost is operations in 
+$\F_q$. We can take $\MM(n) = O(n\log n \loglog n)$ \cite{vzGG}. We also assume that two $n$-bit 
+integers can be multiplied using $O(n\log n \loglog n)$ bit operations \cite{vzGG}. The 
+exponentiations algorithm then takes $O(\MM(p))$ operations in $\F_q$ which is exponential in $\log 
+p$. We wish to have algorithms with complexity at most polynomial in $\log p$.
+
+The Frobenius endomorphism $\pi$ of $E$ satisfies $\pi^2 - t\pi + p^2 = 0$ in the endomorphism ring 
+$\ringofend(E)$. The number $t$ is called the \textit{trace} of the Frobenius. One can show that 
+$E$ is supersingular if and only if $t \equiv 0 \pmod{p}$. An immediate algorithm that comes to 
+mind is then to compute $t$ by counting the number of point on $E$, and test the above congruence. 
+An efficient point counting algorithm is due to \cite{schoof85} which takes $\tildO(\log^5 p)$ bit 
+operations. The notation $\tildO$ means ignoring logarithmic factors in the main complexity 
+parameter.
+
+If one is content with a high-probability output then a simple \textit{Monte Carlo} test can be 
+performed as follows. The curve $E$ is supersingular if and only if $\#E(\F_q) = (p \pm 1)^2$. 
+Therefore, we can pick a random point $P \in E(\F_q)$ and check whether $(p \pm 1)P = 0$. If so 
+then $E$ is supersingular with probability at least $(p - 1) / p$ \cite[Prop. 2]{sutherland2012}, 
+which is very close to 1 when $p$ is large. The cost of this test is $\tildO(\log p)$ operations in 
+$\F_p$ or $\tildO(\log^2 p)$ bit operations.
+
+The best known algorithm, up to the author's knowledge, is due to \cite{sutherland2012}. The 
+algorithm is based on traversing the isogeny graph of $E$, and it runs in $O(\log^3p \loglog^3p)$ 
+bit operations. In fact, the algorithm exploits an interesting structural difference between 
+isogeny graphs of ordinary and supersingular curves. For more details on the algorithm and on 
+isogeny graphs we refer the reader to \cite{sutherland2012, kohel1996}.
+
+\paragraph{Polynomial identity testing (PIT).}
+Given a field $K$, an arithmetic circuit with $n$ variables over $K$ is a directed tree with the 
+leaves considered as input variables and the root as output. The operations on the input, which are 
+implemented by the internal nodes (gates), consist of only addition and multiplication in $K$. 
+Here, the edges act as wires. Therefore, a circuit implements a polynomial function in $K[x_1, 
+\dots, x_n]$. The size of a circuit $C$ is defined as the number of gates in $C$. The polynomial 
+identity testing can be formally stated as: 
+
+\vspace*{2mm}
+
+\textit{PIT Problem:} Let $f \in K[x_1, \dots, x_n]$ be a polynomial given by the arithmetic 
+circuit $C$. Find a deterministic algorithm with complexity $poly(size(C))$ operations in $K$ that 
+tests if $f$ is identically zero.
+
+\vspace*{2mm}
+
+The above is equivalent to testing $f_1 = f_2$ for two given polynomials $f_1, f_2 \in K[x_1, 
+\dots, x_n]$. A very efficient probabilistic algorithm is derived from the following theorem 
+\cite{schwartz1980,zippel1979}.
+\begin{theorem}[Schwartz-Zippel]
+	Let $f \in K[x_1, \dots, x_n]$ be of degree $d \ge 0$. Let $S \subseteq K$ be a finite subset, 
+	and let $\mathbf{s} \in S^n$ be a point with coordinates chosen independently and uniformly at 
+	random. Then $\Pr[f(\mathbf{s}) = 0] \le d / \abs{S}$.
+\end{theorem}
+If the degree $d$ is small compared to $\abs{S}$ then, by the theorem, evaluating $f$ at a random 
+point tells if $f = 0$ with high probability. We will use this theorem in Section 
+\ref{sec:pit-for-div}. For a survey on polynomial identity testing see \cite{saxena2009}.
+
+
+
+
+%/////////////////////////////////////////////////////
+
+
+\section{Division polynomials}
+\label{sec:divpoly}
+
+The $n$-th division polynomial $\psi_n$ of $E$ is an element of the function field $K(E)$ of $E$ 
+with divisor $(\psi_n) = [n]^*\infty - n^2\infty$. The map $[n]^*$ is induced by the 
+multiplication-by-$n$ endomorphism on the divisor class group $\text{Div}(E)$. Division polynomials 
+can be define using recursive relations as follows. Given $E: y^2 = x^3 + ax + b$ we have
+\begin{equation}
+\label{equ:divpoly1}
+	\begin{array}{rll}
+		\psi_0 & = & 0 \\
+		\psi_1 & = & 1 \\
+		\psi_2 & = & 2y \\
+		\psi_3 & = & 3x^4 + 6ax^2 + 12bx - A^2 \\
+		\psi_4 & = & 4y(x^6 + 5ax^4 + 20bx^3 - 5a^2x^2 - 4abx - 8b^2 - a^3) \\
+		\psi_{2m + 1} & = & \psi_{m + 2}\psi_m^3 - \psi_{m - 1}\psi_{m + 1}^3 \quad \text{for } m 
+		\ge 2 \\
+		\psi_{2m} & = & (2y)^{-1}(\psi_{m + 2}\psi_{m - 1}^2 - \psi_{m - 2}\psi_{m + 1}^2)\psi_m 
+		\quad \text{for } m \ge 3
+	\end{array}
+\end{equation}
+It follows from the definition that a point $P \in E(\overline{\F_p})$ is an $n$-torsion if and 
+only if $\psi_n(P) = 0$. In other words, the division polynomial $\psi_n$ exactly encodes the whole 
+$n$-torsion $E[n]$. Division polynomials play an important role in the theory of elliptic 
+curves. They are also heavily used in implementations of the point counting algorithm 
+\cite{schoof85}. 
+
+
+\subsection{Computing division polynomials}
+
+In this subsection, we briefly review an algorithm that efficiently computes the division 
+polynomials. To compute $\psi_n$, the idea is to simply use the recursive relations 
+(\ref{equ:divpoly1}) to achieve a double-and-add scheme on the subscript $n$. First we should note 
+that it is possible to characterize non-$2$-torsion points with univariate versions of the 
+$\psi_n$. This makes computations much easier, and will be enough for our purposes. Define
+\[
+f_m = 
+\begin{cases}
+	\psi_m & m \text{ odd} \\
+	\psi_m / \psi_2 & m \text{ even}.
+\end{cases}
+\]
+Then for non-$2$-torsion $P \in E$ we have $P \in E[n]$ if and only if $f(P) = 0$. Let $F = 
+\psi_2^2 = 4(x^3 + ax + b)$. Then the following relations for the $f_m$ can be derived from 
+(\ref{equ:divpoly1}).
+\begin{equation}
+\label{equ:divpoly2}
+	\begin{array}{rll}
+		f_0 & = & 0 \\
+		f_1 & = & 1 \\
+		f_2 & = & 1 \\
+		f_3 & = & \psi_3 \\
+		f_4 & = & \psi_4 / \psi_2 \\
+		f_{2m + 1} & = & 
+		\begin{cases}
+			f_{m + 2}f_m^3 - F^2f_{m - 1}f_{m + 1}^3 & m \text{ odd, } m \ge 3 \\
+			F^2f_{m + 2}f_m^3 - f_{m - 1}f_{m + 1}^3 & m \text{ even, } m \ge 2 \\
+		\end{cases} \\
+		f_{2m} & = & (f_{m + 2}f_{m - 1}^2 - f_{m - 2}f_{m + 1}^2)f_m \quad \text{for } m \ge 3
+	\end{array}
+\end{equation}
+From the indices involved in the above relations it is immediate that given $f_{i - 3}, \dots, f_{i 
++ 5}$, one can compute the polynomials $f_{2i - 3}, \dots, f_{2i + 5}$, or the polynomials $f_{2(i 
++ 1) - 3}, \dots, f_{2(i + 1) + 5}$. We can save some multiplications by introducing $S_i = f_{i - 
+1}f_{i + 1}$ and $T_i = f_i^2$ and rewriting (\ref{equ:divpoly2}) as
+\begin{equation}
+\label{equ:divpoly3}
+\begin{array}{rll}
+	f_{2m + 1} & = & 
+	\begin{cases}
+		T_mS_{m + 1} - F^2T_{m + 1}S_m & m \text{ odd, } m \ge 3 \\
+		F^2T_mS_{m + 1} - T_{m + 1}S_m & m \text{ even, } m \ge 2 \\
+	\end{cases} \\
+	f_{2m} & = & T_{m - 1}S_{m + 1} - T_{m + 1}S_{m - 1} \quad \text{for } m \ge 3
+\end{array}
+\end{equation}
+We shall only need modular computation of division polynomials in this paper. Therefore, Algorithm 
+\ref{alg:divpoly-comp} performs computations mod $f$ for a given polynomial $f \in \F_q[x]$.
+
+\begin{algorithm}[H]
+	\caption{Division polynomial computation}
+	\label{alg:divpoly-comp}
+	\begin{algorithmic}[1]
+		\REQUIRE Integer $m \ge 1$, and polynomial $f(x) \in \F_q[x]$ of degree $n$
+		\ENSURE The division polynomials $f_{m - 3}, \dots, f_{m + 5} \pmod{f}$
+		\STATE Let $b_kb_{k - 1} \cdots b_0$ be the binary representation of $m$
+		\STATE set $r, s$ as follows \\
+		$r = 3, s = 2$~ if~ $b_kb_{k - 1} = 11$ \\
+		$r = 4, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 100$ \\
+		$r = 5, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 101$
+		\STATE Set $j = r$, and compute $f_{j - 3}, \dots, f_{j + 5} \pmod{f}$
+		\STATE\label{step:divpoly-loop} For $i = s$ down to $0$ \\
+		Compute $f_{2j + b_i - 3}, \dots, f_{2j + b_i + 5} \pmod{f}$ from $f_{j - 3}, \dots, f_{j + 
+		5}$ using relations (\ref{equ:divpoly3}) \\
+		$j \leftarrow 2j + b_i$
+		\RETURN $f_{m - 3}, \dots, f_{m + 5}$
+	\end{algorithmic}
+\end{algorithm}
+
+The correctness of the algorithm follows from the previous remarks. The runtime is dominated by 
+the for-loop at Step \ref{step:divpoly-loop}. The number of iterations is $O(\log m)$, and at each 
+iteration a few polynomial multiplications of degree $n$ is done at the cost of $O(\MM(n))$ 
+operations in $\F_p$. Therefore, the total runtime is $O(\MM(n)\log m)$ operations in $\F_p$.
+
+
+%/////////////////////////////////////////////////////
+
+
+\section{PIT for the $p$-th division polynomial}
+\label{sec:pit-for-div}
+
+Given an elliptic curve $E/\F_q$ we have $E[p] \cong 0$ (resp. $E[p] \cong \Z / p\Z$) when $E$ is 
+supersingular (resp. ordinary). Therefore, the $p$-th division polynomial $\psi_p$ of $E$ is a 
+constant $c \in \F_q$ when $E$ is supersingular, and non-constant otherwise. This means, solving 
+the polynomial identity testing problem $\psi_p = c$ will give an answer to the question of whether 
+$E$ is ordinary or supersingular. 
+
+First, we investigate the shape of $\psi_p$ in both cases. For the general polynomial $\psi_n$ one 
+has
+\[
+\psi_n =
+\begin{cases}
+	y(nx^{(n^2 - 4) / 2} + \cdots) & n \text{ even} \\
+	nx^{(n^2 - 1) / 2} + \cdots & n \text{ odd.}
+\end{cases}
+\]
+See \cite{washington2008} for more details. It follows that for $\psi_p$, which is a univariate 
+polynomial, $\deg \psi_p < (p^2 - 1) / 2$. In fact, for ordinary curves we have
+\begin{lemma}
+	\label{lem:ord_divpoly}
+	Let $E/\F_q$ be an ordinary elliptic curve, and let $r$ be the order of trace $t$ of the 
+	Frobenius in $(\Z / p\Z)^*$. Then $\deg \psi_p = p(p - 1) / 2$. Also
+	\[ \psi_p = f_1^pf_2^p \cdots f_{(p - 1) / 2r}^p \]
+	is the factorization of $\psi_p$ over $\F_q$ where all $f_i$ are of the same degree $r$.
+\end{lemma}
+\begin{proof}
+	We have $\pi \circ \hat{\pi} = [p]$ where $\hat{\pi}$ is the dual of $\pi$. Let $\hat{\pi}(x, 
+	y) = (F, G)$ where $F, G$ are rational functions in $x, y$. Then
+	\begin{equation}
+	\label{equ:mult-p}
+		(F^p, G^p) = \pi(F, G) = [p](x, y) = \left( \frac{\phi_p}{\psi_p^2}, 		
+		\frac{\omega_p}{\psi_p^3} \right)
+	\end{equation}
+	The last equality is the formula for multiplication by $p$, which is define by division 
+	polynomials. It follows that $\psi_p$ is a $p$-th power. Since $\psi_p$ has roots exactly the 
+	abscissas of the nonzero $p$-torsion points it must have degree $p(p - 1) / 2$ which proves the 
+	first part.
+	
+	For the second part note that the action of the Frobenius on $E[p]$ is just multiplication by 
+	the trace $t$. By the first part $\psi_p = \tilde{\psi}_p^p$ where $\tilde{\psi}_p$ splits into 
+	factors of degree $r$ over $\F_q$.
+\end{proof}
+For supersingular elliptic curves we have
+\begin{lemma}
+	\label{lem:ss_divpoly}
+	Let $E/\F_q$ be a supersingular elliptic curve. Then $\psi_p = \pm 1$.
+\end{lemma}
+\begin{proof}
+	When $E$ is supersingular we have $t = \pm 2p$ so that the characteristic polynomial of the 
+	Frobenius factorizes as $(X \pm p)^2$. Therefore, $\pi(x, y) = \pm [p](x, y)$. Comparing the 
+	first coordinates and considering the multiplication-by-$p$ formula (\ref{equ:mult-p}) gives 
+	$x^{p^2} = \phi_p(x) / \psi_p(x)^2$. Since $\phi_p(x) = x^{p^2} + \cdots$, see 
+	\cite{washington2008}, it follows that $\psi_p(x) = \pm 1$.
+\end{proof}
+It is not hard to distinguish the cases $\psi_p = 1$ and $\psi_p = -1$ in Lemma 
+\ref{lem:ss_divpoly}, but we are not concerned with that. In fact, it is easily done in practice by 
+computing $\psi_p(0)$. Without loss of generality, we only consider the case $\psi_p(x) = 1$.
+
+\paragraph{A probabilistic algorithm.}
+Lemmas \ref{lem:ord_divpoly}, \ref{lem:ss_divpoly} and Schwartz-Zippel Theorem give a probabilistic 
+algorithm for the PIT $\psi_p(x) = 1$: Select a random element $a \in S = \F_q$ and compute 
+$\psi_p(a)$. If $\psi_p(a) = 1$ then $E$ is supersingular, and it is ordinary otherwise. If $E$ is 
+ordinary, then the output is "supersingular" with probability 
+\[ P[\psi_p(a) = 1] = P[\tilde{\psi}_p(a) = 1] \le (p - 1) / 2p^2 < 1 / 2p. \] 
+where $\psi_p = \tilde{\psi}_p^p$ as in Lemma \ref{lem:ord_divpoly}. The runtime of this algorithm 
+is $\tildO(\log p)$ operations in $\F_p$, which is the same as the Monte Carlo algorithm given in 
+Section \ref{sec:intro}.
+
+
+
+\subsection{A Schoof algorithm}
+
+To see whether $E/\F_q$ is supersingular one can check either of the identities $\psi_p(x) = 1$ or 
+$\pi = \pm [p]$. Therefore, solving the former PIT is equivalent to testing the latter identity. 
+This can be done using arithmetic modulo division polynomials as we show in the following. 
+
+Let $\mathcal{S} = \{2, 3, \dots, \ell\}$ be a set of primes such that $\prod_{r \in \mathcal{S}} r 
+\ge 4p$. For this to be true we only need $\ell = O(\log p)$. We know that $E$ is supersingular if 
+and only if $t = \pm 2p$. Therefore, it follows from the Chinese Remainder Theorem that $E$ is 
+supersingular if and only if $t \equiv \pm 2p \pmod{r}$ for all $r \in S$. Let $P \in E$ be a point 
+of prime order $r$. Evaluating the characteristic polynomial of $\pi$ at $P$ gives
+\[ \pi^2(P) - t\pi(P) + [p^2]P = 0. \]
+If also $\pi(P) = \pm [p]P$ then $t \equiv \pm 2p \pmod{r}$. So, by the above, $E$ is supersingular 
+if and only if $\pi(P) = \pm [p]P$ for a point $P$ of order $r$ for all $r \in \mathcal{S}$.
+
+The last condition can be checked using division polynomials. More precisely, it is equivalent to 
+checking the identities
+\begin{equation}
+\label{equ:schoof}
+	x^{p^2} = x - \frac{\phi_s(x)}{\psi_s^2(x)} ~ \bmod \psi_r(x), \quad \text{for all } r \in 
+	\mathcal{S}
+\end{equation}
+where $s = p \bmod r$. The polynomials $\{ \psi_i \}_{i \le \abs{\mathcal{S}}}$ can be computed in 
+negligible 
+time. Since the degree of $\phi_r(x)$ is $r^2 = O(\log^2 p)$, computing $x^{p^2} \bmod \psi_r$ 
+takes $\tildO(\log^3 p)$ operations in $\F_p$. So the total cost of these checks is $\tildO(\log^4 
+p)$ operations in $\F_p$.
+
+
+\subsection{PIT using points of high order}
+
+From the identity $\psi_p(x) = 1$ for a supersingular curve $E/\F_q$, and the multiplication-by-$p$ 
+formula (\ref{equ:mult-p}) we get the stronger condition
+\begin{equation}
+\label{equ:ss-strong}
+	\arraycolsep=1.4pt
+	\begin{array}{lll}
+		\psi_p(x) & = & 1, \\
+		\psi_{p - 1}\psi_{p + 1}(x) & = & x - x^{p^2}
+	\end{array}
+\end{equation}
+for supersingularity. Note that in this case the univariate polynomial $\psi_{p - 1}\psi_{p + 
+1}(x)$ splits completely over $\F_q$. If these identities are not satisfied when evaluated at any 
+point $P \in E$ then $E$ is ordinary. Otherwise, not much can be said about $E$ unless the point 
+$P$ is chose more carefully. More precisely, we have
+\begin{proposition}
+	Let $P \in E$ be a point of order $r$ that satisfies (\ref{equ:ss-strong}). Then $\psi_p(kP) 
+	= 1$ for all odd $1 \le k \le r - 1$. If moreover $\psi_p(2P) = 1$ then $\psi_p(kP) = 1$ for 
+	all $1 \le k \le r - 1$.
+\end{proposition}
+\begin{proof}
+	For all positive integers $m, n$ we have
+	\begin{equation}
+	\label{equ:divpoly-comp}
+		\psi_{mn} = (\psi_m \circ [n])\psi_n^{m^2}.
+	\end{equation}
+	This follows from comparing divisors on both sides. When $k$ is odd $\psi_k$ is a univariate 
+	polynomial, and so $\psi_k(Q)$ only involves the $x$-coordinate of $Q \in E$. So if $P \in E$ 
+	satisfies (\ref{equ:ss-strong}) then $x_{pQ} = x_{\pi Q}$, and hence 
+	\begin{equation}
+	\label{equ:frob-p}
+		\psi_k(P)^{p^2} = \psi_k(\pi(P)) = \psi_k(pQ)
+	\end{equation}
+	Therefore, for $(m, n) = (p, k)$, and $(m, n) = (k, p)$ identity (\ref{equ:divpoly-comp}) gives
+	\[
+	\arraycolsep=1.4pt
+	\begin{array}{rll}
+		\psi_{kp}(P) & = & \psi_p(P)^{k^2} \psi_k(pP) \\
+		& = & \psi_k(pP), \vspace*{2mm} \\		 
+		\psi_{kp}(P) & = & \psi_k(P)^{p^2} \psi_p(kP) \\
+		& = & \psi_k(pP) \psi_p(kP) \\
+	\end{array}
+	\]
+	where $\psi_k(pP) \ne 0$ since $P$ is of order $r > k$. Comparing the above identities proves 
+	the first part. For the second claim we show that (\ref{equ:frob-p}) holds for any $k$, and the 
+	rest of the proof is the same. Using (\ref{equ:divpoly-comp}) with $(m, n) = (2, p)$ and $(m, 
+	n) = (p, 2)$ we get $2y_{\pi P} = \psi_2(\pi(P)) = \psi_2(pP) = 2y_{pP}$ which implies $\pi(P) 
+	= pP$, and hence $\psi_k(\pi(P)) = \psi_k(pP)$ for any $k$.
+\end{proof}
+The above result enables us to check the PIT (\ref{equ:ss-strong}) using a high order point as 
+follows. Let $P \in E$ be a point of order $r > 2p + 2$. If $P$ satisfies (\ref{equ:ss-strong}) 
+then $\tilde{\psi}_p(kP)^p = \psi_p(kP) = 1$ hence $\tilde{\psi}_p(kP) = 1$ for at least $p + 1$ 
+values of $k$. This means $\tilde{\psi}_p(x_{kP}) = 1$ for at least $(p + 1) / 2$ distinct 
+abscissas of the points $kP$. But the univariate polynomial $\tilde{\psi}_p$ has degree $(p - 1) / 
+2$ so it is uniquely determined by $(p + 1) / 2$ pairs $(a, \tilde{\psi}_p(a))$. It follows that 
+$\tilde{\psi}_p^p = 1$, and hence $\psi_p = 1$. It only remains to efficiently find a point of high 
+order on $E$. For this, we follow the approach of Voloch \cite{voloch2007,voloch2010}.
+
+Let $\mathbb{G}_m$ be the multiplicative group over $\F_q$. In \cite{voloch2010}, elements of high 
+order in $\F_q^*$ are obtained using points on a curves contained in the fibered product $E \times 
+\mathbb{G}_m$. We can use the same technique to obtain points of high order on $E$. The proofs 
+remain essentially the same except for some minor details which explain in the following. We fix an 
+embedding $\mathbb{G}_m \hookrightarrow \P^1$ and assume all curves are projective.
+
+Let $X$ be an absolutely irreducible curve contained in $E \times \P^1$. Also assume that $X$ 
+has non-constant projections to both factors, and denote by $D$ the degree of $X \rightarrow 
+\P^1$. Consider the commutative diagram
+
+\begin{center}
+	\begin{tikzpicture}[node distance = 1.3cm, >=stealth]
+		\node (Xn) {$X_n$};
+		\node[right = of Xn, inner sep = 5pt] (X) {$X$};
+		\node[below = of Xn] (Gm1) {$\P^1$};
+		\node[below = of X] (Gm2) {$\P^1$};
+		\node[right = of X] (E) {$E$};
+		\draw[->] (Xn) edge (X);
+		\draw[->] (Xn) edge (Gm1);
+		\draw[->] (X) edge (Gm2);
+		\draw[->] (Gm1) edge node[above, midway] {\scriptsize $\mu_n$} (Gm2);
+		\draw[->] (X) edge (E);
+	\end{tikzpicture}
+\end{center}
+
+where $X_n$ is the fibered product $X \times \P^1$. The bottom morphism corresponds to the field 
+extension $\F_q(u)/\F_q(t)$ with $u^n = t$. If $n$ is coprime to $Dp$ then the morphism $X_n 
+\rightarrow X$ is separable of degree $n$, and $X_n$ is also absolutely irreducible. The morphism 
+$X_n \rightarrow E$ obtained by composing the top two morphisms determines an element $y_n$ in the 
+function field $K_n = K(X_n)$.
+
+Assume that all such $y_n$ are elements of some fixed algebraic closure of $K(X)$. Then Lemma 2.2 
+in \cite{voloch2010} becomes
+\begin{lemma}
+	The functions $y_n$, considered as morphisms $X_n \rightarrow E$ with $(n, Dp) = 1$, are 
+	$\Z$-linearly independent.
+\end{lemma}
+\begin{proof}
+	Given $\{y_{n_i}\}_{1 \le i \le s}$, let $L$ be the compositum of the function fields $K_{n_i}$,
+	and let $C_L$ be the smooth curve with function field $L$. We have an isomorphism 
+	\begin{equation}
+	\label{equ:curve-hom}
+		E(L) \cong \Hom_{\F_q}(C_L, E)
+	\end{equation}
+	where the right hand side is the group of morphisms of $k$-schemes. This isomorphism holds if 
+	$L, C_L$ are replaced by any $K_{n_i}, X_{n_i}$. To linearize the addition of the $y_{n_i}$ on 
+	$E$ to addition of differentials in $\Omega_{C_L}$ we consider the pullbacks $\omega_{n_i} = 
+	y_{n_i}^*(\omega_E)$ of the invariant differential $\omega_E$ of $E$. Since $C_L \rightarrow 
+	X_{n_i}$ is separable for all $1 \le i \le s$, the induced morphisms
+	\begin{equation}
+	\label{equ:diff-mod}
+	y_{n_i}^*: \Omega_{X_{n_i}} \longrightarrow \Omega_{C_L}
+	\end{equation}
+	are injective. Now it follows from (\ref{equ:curve-hom}) and (\ref{equ:diff-mod}) that the 
+	$\omega_{n_i}$ reside in different extensions inside $\Omega_{C_L}$ so they must be 
+	$\Z$-linearly independent.
+\end{proof}
+Following the notation of \cite{voloch2010}, for a function field $L/\F_q$ we define $\deg_Lz$ to 
+be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$. The following 
+theorem replaces Theorem 1.1 in \cite{voloch2010}.
+\begin{theorem}
+	\label{theo:order-general}
+	Let $X \subset E \times \mathbb{G}_m$ be an absolutely irreducible curve over $\F_q$ with 
+	non-constant projections to both factors. Given $\epsilon > 0$ there exits $\delta > 0$ such 
+	that if $(P, b) \in X$ satisfies
+	\begin{enumerate}[leftmargin = *, labelsep = *, align = left, itemsep = -0.1cm, font = 
+	\normalfont, label = (\roman*)]
+		\item $d = [\F_q(P) : \F_q]$ sufficiently large,
+		\item $\ang{P}$ invariant under the action of $\pi$,
+		\item the order $r$ of $b$ satisfies $r < d^{2 - \epsilon}$
+	\end{enumerate}
+	then $P$ has order at least $\exp(\delta (\log d)^2)$.
+\end{theorem}
+\begin{proof}
+	Essentially the same as \cite[Theorem 1.1]{voloch2010} except that now $z = \sum_{j \in 
+	I}y_{n_j} - \sum_{j \in I'}y_{n_j}$ where the addition occurs on $E$ compared to $z = \prod_{j 
+	\in I}y_{n_j} / \prod_{j \in I'}y_{n_j} - 1$ where the multiplication occurs on $\mathbb{G}_m$. 
+	Also we have the bound
+	\[ \deg_L z \le \sum_{j \in I \cup I'} \deg_L y_j = \sum_{j \in I \cup I'} [L : K_{n_j}] 
+	\deg_{K_{n_j}} y_{n_j} \ll TD^{2T}N. \qedhere\] 
+\end{proof}
+The logarithmic term $\log d$ in the exponent in Theorem \ref{theo:order-general} is forced by the 
+exponent $2T$ in the bound as shown in the proof. If $X$ is taken to be an open subset of the graph 
+of a morphism $f: E \rightarrow \mathbb{P}^1$ then better bounds can be obtained. In fact, for our 
+purposes it is enough to take $f$ as the projection to the first coordinate, i.e. $f(P) = x_P$. A 
+point $(x_P, P)$ is in $X_n$ if $(x_P^n, P)$ is in $X$. Therefore, it is implied by the commutative 
+digram
+
+\begin{center}
+	\begin{tikzpicture}[>=stealth]
+	\node[inner sep = 5pt] (KXn) {$K_n$};
+	\node[right = 1.7cm of KXn, inner sep = 3pt] (KX) {$K(X)$};
+	\node[below = of Xn] (KGm1) {$K(\P^1)$};
+	\node[below = of KX] (KGm2) {$K(\P^1)$};
+	\node[right = of KX] (KE) {$K(E)$};
+	\draw[->] (KX) edge (KXn);
+	\draw[->] (KGm1) edge (KXn);
+	\draw[->] (KGm2) edge (KX);
+	\draw[->] (KGm2) edge node[above, midway] {\scriptsize $\mu_n^*$} (KGm1);
+	\draw[->] (KE) edge (KX);
+	\end{tikzpicture}
+\end{center}
+
+that $[K_n : K(\P^1)] \le 2$, and a much smaller bound $\deg_L z \ll TDN$ is obtained. The proof of 
+\cite[Theorem 1.1]{voloch2010} implies that $P$ has order at least $\exp(d^\delta)$ for some 
+$\delta > 0$. We therefore have
+\begin{theorem}
+	\label{theo:order-ell}
+	Let $E/\F_q$ be an elliptic curve and let $f: E \rightarrow \mathbb{P}^1$ be the projection to 
+	the first coordinate. Then with the assumptions of Theorem \ref{theo:order-general} and with 
+	$X$ as an open subset of the graph of $f$, the point $P$ has order at least $\exp(d^\delta)$.
+\end{theorem}
+One concludes from the above theorems and the ones in \cite{voloch2010} that given a point $P \in 
+E$ and a function $f$ on $E$, under some conditions, either $P$ has large order or $f(P)$ has large 
+order. A stronger bound is conjectured by Poonen\footnote{See \cite{voloch2007}.} which we include 
+here for completeness.
+\begin{conjecture}[Poonen]
+	\label{conj:poonen}
+	Let $X/\F_q$ be a semiabelian variety and let $Y \subset X$ be a closed subvariety. Let $Z$ be 
+	the union of all translates of positive-dimensional semiabelian varieties $X'/\overline{\F_q}$ 
+	contained in $X$. Then there is a constant $c > 0$ such that for every nonzero $x \in (X - Z) 
+	(\overline{\F_q})$, $x$ has order at least $(\#\F_q(x))^c$.
+\end{conjecture}
+In our context, this implies that if $P \in E(\F_{q^n})$ does not lie in any subfield, and $f$ is a 
+non-constant function on $E$ then either $P$ or $f(P)$ has order at least $q^{n\epsilon}$. So 
+forcing $f(P)$ to be of small order in $\F_{q^n}^*$ yields $P$ of large order in $E$.
+
+From the above one derives an algorithm for the PIT (\ref{equ:ss-strong}) as follows. Let $r > 0$ 
+be an integer such that the order $d$ of $p^2$ in $(\Z/r\Z)^*$ satisfies $d^{2 - \epsilon} > r$. 
+Let $K = \F_q[X]/g(X)$ where $g(X)$ is an irreducible factor of the  $r$-th cyclotomic 
+polynomial, and let $x$ be the image of $X$ in $K$. A point $P \in E$ with first coordinate $x$ 
+lies in $E(F)$ where $[F : K] \le 2$. If $P$ satisfies (\ref{equ:ss-strong}) then $\ang{P}$ is 
+invariant under the action of $\pi$. Then by Theorem \ref{theo:order-ell} the order of $P$ is at 
+least $\exp(d^\delta)$ for some constant $\delta > 0$. If $d$ is large enough, say $d = O(\log p)$, 
+then $P$ will have order large enough, say $> 2p + 2$, to imply that $\psi_p = 1$. This gives 
+Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
+
+\begin{algorithm}[H]
+	\caption{Solving PIT (\ref{equ:ss-strong})}
+	\label{alg:ss-strong}
+	\begin{algorithmic}[1]
+		\REQUIRE PIT (\ref{equ:ss-strong})
+		\ENSURE true if the PIT holds, and false otherwise
+		\STATE\label{step:ss-find-par}
+		find $r, d = O(\log p)$ such that the order $d$ of $p^2$ in $(\Z/r\Z)^*$ satisfies $d^{2 - 
+		\epsilon} > r$
+		\STATE\label{step:ss-factor}
+		obtain an irreducible factor $g$ of the $r$-th cyclotomic polynomial
+		\STATE\label{step:ss-psi}
+		compute $x^{p^2}, \psi_p, \psi_{p - 1}, \psi_{p + 1} \bmod g$
+		\IF {(\ref{equ:ss-strong}) holds}
+			\STATE return true
+		\ELSE
+			\STATE return false
+		\ENDIF
+	\end{algorithmic}
+\end{algorithm}
+
+The integers $r, d$ in Step \ref{step:ss-find-par} can be computed in negligible time. For example, 
+if $r$ is a randomly chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of 
+the time and so $d^2 > r$ with high probability. Step \ref{step:ss-factor} can be done using 
+$\tildO((\log p)^2)$ operations in $\F_p$, \todo{cite the finite field isomorphism paper}. Step 
+\ref{step:ss-psi} is performed at the cost of $\tildO(\log^2 p)$ operations in $\F_p$ using 
+Algorithm \ref{alg:divpoly-comp}. Therefore, the total cost of the Algorithm \ref{alg:ss-strong} is 
+$\tildO(\log^2 p)$ operations in $\F_p$.
+
+\begin{remark}
+	The point $P \in E(K)$ described above also satisfies the hypothesis of Conjecture 
+	\ref{conj:poonen}. If the Conjecture holds then we only need $d \ge 1 / c$ which, accoeding to 
+	our experiments, is much smaller than $\log p$. In this case, the complexity of Algorithm 
+	\ref{alg:ss-strong} is $\tildO(\log p)$ operations in $\F_p$.
+\end{remark}
+
+
+%/////////////////////////////////////////////////////
+
+
+\section{Experiments}
+
+
+
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+
