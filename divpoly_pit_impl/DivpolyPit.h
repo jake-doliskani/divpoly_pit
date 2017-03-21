@@ -14,9 +14,11 @@ public:
     virtual ~DivpolyPit();
     
     bool isSuperSingular(const ZZ_pE &a, const ZZ_pE &b);
-    void solvePit();
     
 private:
+
+    bool solvePit(long r, long d);
+    void cycloFactor(ZZ_pEX &factor, long r, long d);
 
     ZZ_pE a;
     ZZ_pE b;
