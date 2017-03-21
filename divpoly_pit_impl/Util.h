@@ -22,6 +22,15 @@ public:
     
 private:
 
+    class Factor {
+    public:
+        long p;
+        long e;
+    };
+
+    void factorNaive(Vec<Factor> &factors, long a);
+    
+    long EulerTotient(long a);
 };
 
 #endif /* UTIL_H */

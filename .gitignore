@@ -22,4 +22,5 @@ divpoly_pit.pdf
 .project
 .settings/
 nbproject/
-
+test
+/divpoly_pit_impl/build/
