@@ -560,16 +560,16 @@ digram
 
 \begin{center}
 	\begin{tikzpicture}[>=stealth]
-	\node[inner sep = 5pt] (KXn) {$K_n$};
-	\node[right = 1.7cm of KXn, inner sep = 3pt] (KX) {$K(X)$};
-	\node[below = of Xn] (KGm1) {$K(\P^1)$};
-	\node[below = of KX] (KGm2) {$K(\P^1)$};
-	\node[right = of KX] (KE) {$K(E)$};
-	\draw[->] (KX) edge (KXn);
-	\draw[->] (KGm1) edge (KXn);
-	\draw[->] (KGm2) edge (KX);
-	\draw[->] (KGm2) edge node[above, midway] {\scriptsize $\mu_n^*$} (KGm1);
-	\draw[->] (KE) edge (KX);
+		\node[inner sep = 5pt] (KXn) {$K_n$};
+		\node[right = 1.7cm of KXn, inner sep = 3pt] (KX) {$K(X)$};
+		\node[below = of Xn] (KGm1) {$K(\P^1)$};
+		\node[below = of KX] (KGm2) {$K(\P^1)$};
+		\node[right = of KX] (KE) {$K(E)$};
+		\draw[->] (KX) edge (KXn);
+		\draw[->] (KGm1) edge (KXn);
+		\draw[->] (KGm2) edge (KX);
+		\draw[->] (KGm2) edge node[above, midway] {\scriptsize $\mu_n^*$} (KGm1);
+		\draw[->] (KE) edge (KX);
 	\end{tikzpicture}
 \end{center}
 
@@ -613,6 +613,11 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 	\begin{algorithmic}[1]
 		\REQUIRE PIT (\ref{equ:ss-strong})
 		\ENSURE true if the PIT holds, and false otherwise
+		\STATE\label{step:ss-eval}
+		compute $\psi_p(a)$ for a ransom $a \in \F_q$.
+		\IF {$\psi(a) \ne \pm 1$}
+			\STATE return false
+		\ENDIF
 		\STATE\label{step:ss-find-par}
 		find $r, d = O(\log p)$ such that the order $d$ of $p^2$ in $(\Z/r\Z)^*$ satisfies $d^{2 - 
 		\epsilon} > r$
@@ -628,12 +633,13 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 	\end{algorithmic}
 \end{algorithm}
 
-The integers $r, d$ in Step \ref{step:ss-find-par} can be computed in negligible time. For example, 
-if $r$ is a randomly chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of 
-the time and so $d^2 > r$ with high probability. Step \ref{step:ss-factor} can be done using 
-$\tildO((\log p)^2)$ operations in $\F_p$, \todo{cite the finite field isomorphism paper}. Step 
-\ref{step:ss-psi} is performed at the cost of $\tildO(\log^2 p)$ operations in $\F_p$ using 
-Algorithm \ref{alg:divpoly-comp}. Therefore, the total cost of the Algorithm \ref{alg:ss-strong} is 
+Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$. The integers $r, d$ in 
+Step \ref{step:ss-find-par} can be computed in negligible time. For example, if $r$ is a randomly 
+chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of the time and so $d^2 > 
+r$ with high probability. Step \ref{step:ss-factor} can be done using $\tildO((\log p)^2)$ 
+operations in $\F_p$, \todo{cite the finite field isomorphism paper}. Step \ref{step:ss-psi} is 
+performed at the cost of $\tildO(\log^2 p)$ operations in $\F_p$ using Algorithm 
+\ref{alg:divpoly-comp}. Therefore, the total cost of the Algorithm \ref{alg:ss-strong} is 
 $\tildO(\log^2 p)$ operations in $\F_p$.
 
 \begin{remark}
@@ -649,8 +655,48 @@ $\tildO(\log^2 p)$ operations in $\F_p$.
 
 \section{Experiments}
 
+We have implemented Algorithm \ref{alg:ss-strong} in C++. The arithmetic in $\F_q[x]$ is done using 
+the NTL library \cite{shoup2001ntl}. The timings are obtained on a single core of an AMD 
+FX(tm)-8120 at 1.4GHz on a Linux OS. Table \ref{table:exper} shows the runtimes for different sizes 
+of the base field $\F_p$. The first row is the size of a randomly selected prime $p$ in bits.
 
+For each prime, we have generated 10 random ordinary and 10 random supersingular curves using Sage 
+\cite{stein2008sage}. Since most of the elliptic curves $E/\F_q$ are ordinary, the generation of 
+random ordinary curves is done by simply choosing random coefficients $a, b$ of the Weierstrass 
+equation. Generating supersingular curves can be efficiently done using the Complex Multiplication 
+method in \cite{broker2009}. As pointed out in \cite{sutherland2012}, one can start from a curves 
+constructed by the method of \cite{broker2009} and take a random walk in the $2$-isogeny graph to 
+get a random supersingular curve.
 
+\begin{table}[H]
+	\centering
+	\footnotesize
+	\begin{tabular}{|ccc|}
+		\hline
+		\bfseries Prime size & \bfseries Ordinary & \bfseries Supersingular \\
+		\hline
+		\hline
+		32 & 1 & 20 \\
+		64 & 2 & 36 \\
+		128 & 8 & 86 \\
+		256 & 18 & 186 \\
+		385 & 31 & 336 \\
+		512 & 47 & 549 \\
+		640 & 69 & 773 \\
+		768 & 118 & 1266 \\
+		896 & 160 & 1791 \\
+		1024 & 202 & 2133 \\
+		\hline
+	\end{tabular}
+	\label{table:exper}
+	\caption{Experiments, times are in miliseconds}
+\end{table}
+
+The average times for each set of curves are listed in columns "Ordinary" and "Supersingular" 
+respectively. As the timings suggest, detecting ordinary curves is substantially faster in average. 
+This is because, as explained in Section \ref{sec:pit-for-div}, for a random $a \in \F_q$, most 
+ordinary curves fail to pass the test $\psi_p(a) \ne \pm 1$ performed at the beginning of the 
+algorithm.
 
 
 
