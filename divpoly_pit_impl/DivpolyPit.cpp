@@ -36,9 +36,6 @@ bool DivpolyPit::isSuperSingular(const ZZ_pE& a, const ZZ_pE& b) {
         r = NextPrime(r + 1);
     }
     
-    cout << "r: " << r << endl;
-    cout << "d: " << d << endl;
-    
     return solvePit(r, d);
     
 }
@@ -63,11 +60,7 @@ bool DivpolyPit::solvePit(long r, long d) {
     
     Vec<ZZ_pEX> polys;
     polys.SetLength(9);
-    
-    Util util;
-    long start = util.getTimeMillis();
     divisionPoly.compute(polys, a, b, ZZ_p::modulus(), r);
-    cout << "divpolyTime: " << util.getTimeMillis() - start << endl;
     
     if (deg(polys[3]) > 0)
         return false;
@@ -83,7 +76,7 @@ bool DivpolyPit::solvePit(long r, long d) {
     clear(xp2);
     SetCoeff(xp2, rem(sqr(ZZ_p::modulus()), r), 1);
     psi2 = divisionPoly.getPsi2();
-    
+
     // test \pis_{p - 1}\psi_{p + 1} = x - x^{p^2}
     sub(xp2, temp, xp2);
     CycloMod cycloMod(r);

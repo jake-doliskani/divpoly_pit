@@ -236,6 +236,7 @@ void DivisionPoly::computeFirstValues(Vec<ZZ_pEX>& result, int msbits) {
     SetCoeff(psi2, 1, a);
     SetCoeff(psi2, 0, b);
     mul(psi2, psi2, 4);
+    cycloMod.reduce(psi2, psi2);
     cycloMod.sqrMod(psi2SquareEX, psi2);
     
     // f1 = 1

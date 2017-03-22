@@ -6,10 +6,56 @@
 #include <iostream>
 #include <NTL/ZZ_pXFactoring.h>
 #include <NTL/ZZX.h>
+#include <vector>
 
 using namespace std;
 
-void testPIT() {
+
+class TestCase {
+public:
+    long numBits;
+    ZZ p;
+    ZZ a0;
+    ZZ a1;
+    ZZ b0;
+    ZZ b1;
+};
+
+
+void readTestCases(vector<TestCase> &testCases, char* fileName) {
+    FILE *input = fopen(fileName, "r");
+    
+    while (true) {
+        char str1[1000];
+        char str2[1000];
+        TestCase testCase;
+        
+        if (fscanf(input, "%li\n", &testCase.numBits) == EOF)
+            break;
+        
+        if (fscanf(input, "%s\n", str1) == EOF)
+            break;
+        testCase.p = to_ZZ(str1);
+        
+        if (fscanf(input, "%s%*[*i + ]%s\n", str1, str2) == EOF)
+            break;
+        testCase.a1 = to_ZZ(str1);
+        testCase.a0 = to_ZZ(str2);
+
+        if (fscanf(input, "%s%*[*i + ]%s\n", str1, str2) == EOF)
+            break;
+        testCase.b1 = to_ZZ(str1);
+        testCase.b0 = to_ZZ(str2);
+        
+        testCases.push_back(testCase);
+    }
+    
+    fclose(input);
+}
+
+void testPIT(TestCase testCase) {
+    ZZ_p::init(testCase.p);
+    
     ZZ_pX f;
     clear(f);
     SetCoeff(f, 2, 1);
@@ -17,40 +63,52 @@ void testPIT() {
     ZZ_pE::init(f);
     
     ZZ_pE a, b;
-    SetCoeff(a._ZZ_pE__rep, 0, 1);
-    SetCoeff(a._ZZ_pE__rep, 1, 0);
-    SetCoeff(b._ZZ_pE__rep, 0, 0);
-    SetCoeff(b._ZZ_pE__rep, 1, 0);
-    
-    cout << f << endl;
-    cout << a << endl;
-    cout << b << endl;
-    cout << "--------------------" << endl;
+    SetCoeff(a._ZZ_pE__rep, 0, to_ZZ_p(testCase.a0));
+    SetCoeff(a._ZZ_pE__rep, 1, to_ZZ_p(testCase.a1));
+    SetCoeff(b._ZZ_pE__rep, 0, to_ZZ_p(testCase.b0));
+    SetCoeff(b._ZZ_pE__rep, 1, to_ZZ_p(testCase.b1));
     
     DivpolyPit divpolyPit;
     Util util;
-    long start = util.getTimeMillis();
-    bool ss = divpolyPit.isSuperSingular(a, b);
-    cout << util.getTimeMillis() - start << endl;
+    long time = util.getTimeMillis();
+    bool isSupersingular = divpolyPit.isSuperSingular(a, b);
+    time = util.getTimeMillis() - time;
     
-    if (ss)
+    cout << testCase.numBits << " " << time << " ";
+    if (isSupersingular)
         cout << "supersingular" << endl;
     else
         cout << "ordinary" << endl;
 }
 
-int main(int argc, char** argv) {
-    ZZ p = to_ZZ("2754956713021720098890780431368421677372787959271790387477"
-            "317890624118510598679299103597525957767387725819347045113854046"
-            "173588366530665763998657581236594775145520555464958540941548783"
-            "443208819825034730307049044197015309642918491073582811802566074"
-            "653557629404118309436594332574045232220927558523596423659928957"
-            "87403940341806275640259285102630974616178256580182367");
+void testSupersingular() {
+    vector<TestCase> testCases;
+    char fileName[100] = "supersingular_params";
+    readTestCases(testCases, fileName);
     
-    ZZ_p::init(p);
+    cout << "numBits time type" << endl;
+    for (TestCase testCase : testCases) {
+        testPIT(testCase);
+    }
+}
 
-    testPIT();
+void testOrdinary() {
+    vector<TestCase> testCases;
+    char fileName[100] = "ordinary_params";
+    readTestCases(testCases, fileName);
+    
+    cout << "numBits time type" << endl;
+    for (TestCase testCase : testCases) {
+        testPIT(testCase);
+    }
+}
 
+
+int main(int argc, char** argv) {
+    
+    testSupersingular();
+    testOrdinary();
+    
     return 0;
 }
 
