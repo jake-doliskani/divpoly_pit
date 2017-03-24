@@ -14,6 +14,8 @@
 \usepackage{algorithm}
 \usepackage{authblk}
 \usepackage{enumitem}
+\usepackage{makecell}
+\usepackage{booktabs}
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows}
 
@@ -646,10 +648,9 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 	\ref{step:ss-find-par} can be computed in negligible time. For example, if $r$ is a randomly 
 	chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of the time and so 
 	$d^2 > r$ with high probability. Step \ref{step:ss-factor} can be done using $\tildO((\log 
-	p)^2)$ operations in $\F_p$, \todo{cite the finite field isomorphism paper}. Step 
-	\ref{step:ss-psi} is performed at the cost of $\tildO(\log^2 p)$ operations in $\F_p$ using 
-	Algorithm \ref{alg:divpoly-comp}. Therefore, the total cost of the Algorithm 
-	\ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in $\F_p$.
+	p)^2)$ operations in $\F_p$, \cite{shoup1994}. Step \ref{step:ss-psi} is performed at the cost 
+	of $\tildO(\log^2 p)$ operations in $\F_p$ using Algorithm \ref{alg:divpoly-comp}. Therefore, 
+	the total cost of the Algorithm \ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in $\F_p$.
 \end{proof}
 
 \begin{remark}
@@ -684,22 +685,23 @@ $2$-isogeny graph to get a random supersingular curve.
 \begin{table}[H]
 	\centering
 	\footnotesize
-	\begin{tabular}{|ccc|}
-		\hline
-		\bfseries Prime size & \bfseries Ordinary & \bfseries Supersingular \\
-		\hline
-		\hline
-		32 & 0.0001 & 0.020 \\
-		64 & 0.0002 & 0.036 \\
-		128 & 0.0002 & 0.086 \\
-		256 & 0.0005 & 0.186 \\
-		385 & 0.0009 & 0.336 \\
-		512 & 0.0017 & 0.549 \\
-		640 & 0.0030 & 0.773 \\
-		768 & 0.0051 & 1.266 \\
-		896 & 0.0131 & 1.791 \\
-		1024 & 0.0202 & 2.133 \\
-		\hline
+	
+	\begin{tabular}{ccccc}
+		& \multicolumn{2}{c}{\bfseries Ordinary} & \multicolumn{2}{c}{\bfseries Supersingular} \\
+		\cmidrule(lr){2-3} \cmidrule(lr){4-5} 
+		\bfseries Prime size & Alg. \ref{alg:ss-strong} & Sage & Alg. \ref{alg:ss-strong} & Sage \\
+		\midrule[0.7pt]
+		32 & 0.0001 & 0.0096 & 0.020 & \\
+		64 & 0.0002 & 0.0148 & 0.036 & \\
+		128 & 0.0002 & 0.0359 & 0.086 & \\
+		256 & 0.0005 & 0.1289 & 0.186 & \\
+		385 & 0.0009 & 0.7071 & 0.336 & \\
+		512 & 0.0017 & 1.0880 & 0.549 & \\
+		640 & 0.0030 & 1.9945 & 0.773 & \\
+		768 & 0.0051 & 5.4015 & 1.266 & \\
+		896 & 0.0131 & 4.9720 & 1.791 & \\
+		1024 & 0.0202 & 8.5884 & 2.133 & \\
+		\midrule[0.7pt]
 	\end{tabular}
 	\label{table:exper}
 	\caption{Experiments (times are in seconds)}
