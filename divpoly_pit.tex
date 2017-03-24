@@ -88,7 +88,7 @@
 
 \setlength{\parindent}{0in}
 
-\title{On Division Polynomials and Supersingularity}
+\title{On Division Polynomial PIT and Supersingularity}
 
 \author[1]{Javad Doliskani}
 \affil[1]{\small Institute for Quantum Computing, University of Waterloo}
@@ -633,20 +633,30 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 	\end{algorithmic}
 \end{algorithm}
 
-Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$. The integers $r, d$ in 
-Step \ref{step:ss-find-par} can be computed in negligible time. For example, if $r$ is a randomly 
-chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of the time and so $d^2 > 
-r$ with high probability. Step \ref{step:ss-factor} can be done using $\tildO((\log p)^2)$ 
-operations in $\F_p$, \todo{cite the finite field isomorphism paper}. Step \ref{step:ss-psi} is 
-performed at the cost of $\tildO(\log^2 p)$ operations in $\F_p$ using Algorithm 
-\ref{alg:divpoly-comp}. Therefore, the total cost of the Algorithm \ref{alg:ss-strong} is 
-$\tildO(\log^2 p)$ operations in $\F_p$.
+\begin{proposition}
+	\label{prop:ss-strong}
+	Algorithm \ref{alg:ss-strong} is correct and for a randomly selected curve $E/\F_q$ has average 
+	complexity $\tildO(\log p)$ operations in $\F_p$. The worst-case complexity of the algorithm is 
+	$\tildO(\log^2 p)$ operations in $\F_p$.
+\end{proposition}
+\begin{proof}
+	Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$. Since most curves 
+	$E/\F_q$ are ordinary and they almost always fail to satisfy the condition $\psi(a) \ne \pm 1$, 
+	this will be the average-case complexity of the algorithm. The integers $r, d$ in Step 
+	\ref{step:ss-find-par} can be computed in negligible time. For example, if $r$ is a randomly 
+	chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of the time and so 
+	$d^2 > r$ with high probability. Step \ref{step:ss-factor} can be done using $\tildO((\log 
+	p)^2)$ operations in $\F_p$, \todo{cite the finite field isomorphism paper}. Step 
+	\ref{step:ss-psi} is performed at the cost of $\tildO(\log^2 p)$ operations in $\F_p$ using 
+	Algorithm \ref{alg:divpoly-comp}. Therefore, the total cost of the Algorithm 
+	\ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in $\F_p$.
+\end{proof}
 
 \begin{remark}
 	The point $P \in E(K)$ described above also satisfies the hypothesis of Conjecture 
 	\ref{conj:poonen}. If the Conjecture holds then we only need $d \ge 1 / c$ which, accoeding to 
-	our experiments, is much smaller than $\log p$. In this case, the complexity of Algorithm 
-	\ref{alg:ss-strong} is $\tildO(\log p)$ operations in $\F_p$.
+	our experiments, is much smaller than $\log p$. In this case, the average-case and worst-case 
+	complexity of Algorithm \ref{alg:ss-strong} are both $\tildO(\log p)$ operations in $\F_p$.
 \end{remark}
 
 
@@ -662,7 +672,7 @@ of the base field $\F_p$. The first row is the size of a randomly selected prime
 
 For each prime, we have generated 10 random ordinary and 10 random supersingular curves using Sage 
 \cite{stein2008sage}. Since most of the elliptic curves $E/\F_q$ are ordinary, the generation of 
-random ordinary curves is done by simply choosing random coefficients $a, b$ of the Weierstrass 
+random ordinary curves is done by simply choosing random coefficients $a, b$ for the Weierstrass 
 equation. Generating supersingular curves can be efficiently done using the Complex Multiplication 
 method in \cite{broker2009}. As pointed out in \cite{sutherland2012}, one can start from a curves 
 constructed by the method of \cite{broker2009} and take a random walk in the $2$-isogeny graph to 
@@ -694,9 +704,9 @@ get a random supersingular curve.
 
 The average times for each set of curves are listed in columns "Ordinary" and "Supersingular" 
 respectively. As the timings suggest, detecting ordinary curves is substantially faster in average. 
-This is because, as explained in Section \ref{sec:pit-for-div}, for a random $a \in \F_q$, most 
-ordinary curves fail to pass the test $\psi_p(a) \ne \pm 1$ performed at the beginning of the 
-algorithm.
+In fact, as mentioned in the proof of Proposition \ref{prop:ss-strong}, the timings under the 
+"Ordinary" column represent the average-case complexity of Algorithm \ref{alg:ss-strong} while the 
+ones under the "Supersingular" column represent the worst-case complexity.
 
 
 
