@@ -15,7 +15,7 @@ DivpolyPit::DivpolyPit() {
 DivpolyPit::~DivpolyPit() {
 }
 
-bool DivpolyPit::isSuperSingular(const ZZ_pE& a, const ZZ_pE& b) {
+bool DivpolyPit::isSupersingular(const ZZ_pE& a, const ZZ_pE& b) {
     this->a = a;
     this->b = b;
     
@@ -36,7 +36,7 @@ bool DivpolyPit::isSuperSingular(const ZZ_pE& a, const ZZ_pE& b) {
         r = NextPrime(r + 1);
     }
     
-    return solvePit(r, d);
+    return solvePit(3, d);
     
 }
 

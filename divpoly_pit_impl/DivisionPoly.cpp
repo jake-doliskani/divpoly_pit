@@ -232,6 +232,7 @@ void DivisionPoly::computeFirstValues(Vec<ZZ_pEX>& result, int msbits) {
     CycloMod cycloMod(modulusDegree);
     
     // psi2 = 4 * (x^3 + a * x + b)
+	clear(psi2);
     SetCoeff(psi2, 3, 1);
     SetCoeff(psi2, 1, a);
     SetCoeff(psi2, 0, b);

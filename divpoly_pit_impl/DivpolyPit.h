@@ -13,7 +13,7 @@ public:
     DivpolyPit();
     virtual ~DivpolyPit();
     
-    bool isSuperSingular(const ZZ_pE &a, const ZZ_pE &b);
+    bool isSupersingular(const ZZ_pE &a, const ZZ_pE &b);
     
 private:
 
