@@ -10,7 +10,7 @@ IsogenyGraph.cpp
 OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(SOURCES))
 
 GXX = g++
-GXXFLAGS = -Wall -g -march=native -std=gnu++11
+GXXFLAGS = -Wall -O3 -march=native -std=gnu++11
 LIBS = -lntl -lgmp -lm
 
 .PHONY = clean execs

@@ -33,10 +33,10 @@ bool DivpolyPit::isSupersingular(const ZZ_pE& a, const ZZ_pE& b) {
         if (pow(d, 2 - epsilon) > r)
             break;
         
-        r = NextPrime(r + 1);
+        r++;
     }
     
-    return solvePit(3, d);
+    return solvePit(r, d);
     
 }
 
