@@ -384,7 +384,7 @@ Section \ref{sec:intro}.
 
 
 
-\subsection{A Schoof algorithm}
+\subsection{A Schoof-like algorithm}
 
 To see whether $E/\F_q$ is supersingular one can check either of the identities $\psi_p(x) = 1$ or 
 $\pi = \pm [p]$. Therefore, solving the former PIT is equivalent to testing the latter identity. 
@@ -647,10 +647,10 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 	this will be the average-case complexity of the algorithm. The integers $r, d$ in Step 
 	\ref{step:ss-find-par} can be computed in negligible time. For example, if $r$ is a randomly 
 	chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of the time and so 
-	$d^2 > r$ with high probability. Step \ref{step:ss-factor} can be done using $\tildO((\log 
-	p)^2)$ operations in $\F_p$, \cite{shoup1994}. Step \ref{step:ss-psi} is performed at the cost 
-	of $\tildO(\log^2 p)$ operations in $\F_p$ using Algorithm \ref{alg:divpoly-comp}. Therefore, 
-	the total cost of the Algorithm \ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in $\F_p$.
+	$d^2 > r$ with high probability. Step \ref{step:ss-factor} can be done using $\tildO(\log^2 p)$ 
+	operations in $\F_p$, \cite{shoup1994}. Step \ref{step:ss-psi} is performed at the cost of 
+	$\tildO(\log^2 p)$ operations in $\F_p$ using Algorithm \ref{alg:divpoly-comp}. Therefore, the 
+	total cost of the Algorithm \ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in $\F_p$.
 \end{proof}
 
 \begin{remark}
