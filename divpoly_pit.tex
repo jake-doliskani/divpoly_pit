@@ -554,11 +554,11 @@ theorem replaces Theorem 1.1 in \cite{voloch2010}.
 	\deg_{K_{n_j}} y_{n_j} \ll TD^{2T}N. \qedhere\] 
 \end{proof}
 The logarithmic term $\log d$ in the exponent in Theorem \ref{theo:order-general} is forced by the 
-exponent $2T$ in the bound as shown in the proof. If $X$ is taken to be an open subset of the graph 
-of a morphism $f: E \rightarrow \mathbb{P}^1$ then better bounds can be obtained. In fact, for our 
-purposes it is enough to take $f$ as the projection to the first coordinate, i.e. $f(P) = x_P$. A 
-point $(x_P, P)$ is in $X_n$ if $(x_P^n, P)$ is in $X$. Therefore, it is implied by the commutative 
-digram
+exponent $2T$ in the bound $TD^{2T}N$ obtained in the proof. If $X$ is taken to be an open subset 
+of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$ then better bounds can be obtained. In 
+fact, for our purposes it is enough to take $f$ as the projection to the first coordinate, i.e. 
+$f(P) = x_P$. A point $(x_P, P)$ is in $X_n$ if $(x_P^n, P)$ is in $X$. Therefore, it is implied by 
+the commutative digram
 
 \begin{center}
 	\begin{tikzpicture}[>=stealth]
@@ -575,7 +575,7 @@ digram
 	\end{tikzpicture}
 \end{center}
 
-that $[K_n : K(\P^1)] \le 2$, and a much smaller bound $\deg_L z \ll TDN$ is obtained. The proof of 
+that $y_n = (x^n, y)$, and a much smaller bound $\deg_L z \ll TDN$ is obtained. The proof of 
 \cite[Theorem 1.1]{voloch2010} implies that $P$ has order at least $\exp(d^\delta)$ for some 
 $\delta > 0$. We therefore have
 \begin{theorem}
@@ -667,31 +667,29 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 \section{Experiments}
 
 We have implemented Algorithm \ref{alg:ss-strong} of this paper and Algorithm 2 of 
-\cite{sutherland2012} both in C++. The arithmetic in $\F_{p^2}[x]$ is done using the NTL library 
-\cite{shoup2001ntl}. The timings are obtained on a single core of an AMD FX(tm)-8120 at 1.4GHz on a 
-Linux machine. Table \ref{table:exper} compares the runtimes for different sizes of the base field 
-$\F_p$. The first row is the size of a randomly selected prime $p$ in bits. For a simpler 
-implementation, and to exploit the low-level arithmetic of the GMP library \cite{gmp} in NTL, we 
-have chosen random primes $p$ such that we alway have $\F_{p^2} = \F_p[T] / (T^2 + 1)$. Arithmetic 
-in $\F_{p^2}$ for a general modulus $T^2 + cT + d$ would be slightly slower.
+\cite{sutherland2012} both in C++\footnote{The source is available at 
+\url{https://github.com/javad-doliskani/divpoly_pit}}. The arithmetic in $\F_{p^2}[x]$ is done 
+using the NTL library \cite{shoup2001ntl}. The timings are obtained on a single core of an AMD 
+FX(tm)-8120 at 1.4GHz on a Linux machine. Table \ref{table:exper} compares the runtimes for 
+different sizes of the base field $\F_p$. The first row is the size of a randomly selected prime 
+$p$ in bits. 
 
 For each prime, we have generated 10 random ordinary and 10 random supersingular curves using Sage 
-\cite{stein2008sage}. Since most of the elliptic curves $E/\F_q$ are ordinary, the generation of 
-random ordinary curves is done by simply choosing random coefficients $a, b$ for the Weierstrass 
-equation. Generating supersingular curves can be efficiently done using the Complex Multiplication 
-method in \cite{broker2009}. As pointed out in \cite{sutherland2012}, one can start from a curves 
+\cite{stein2008sage}. Since most of the elliptic curves $E/\F_q$ are ordinary, generating random 
+ordinary curves amounts to simply choosing random coefficients $a, b$ for the Weierstrass equation. 
+Generating supersingular curves can be efficiently done using the Complex Multiplication 
+method in \cite{broker2009}. As pointed out in \cite{sutherland2012}, one can start from a curve 
 constructed by the method of \cite{broker2009} and take a random walk in the $2$-isogeny graph to 
 get a random supersingular curve.
 
 \begin{table}[H]
 	\centering
-	\footnotesize
-	
+	\small
 	\begin{tabular}{ccccc}
 		& \multicolumn{2}{c}{\bfseries Ordinary} & \multicolumn{2}{c}{\bfseries Supersingular} \\
 		\cmidrule(lr){2-3} \cmidrule(lr){4-5} 
-		\bfseries Prime size & Alg. \ref{alg:ss-strong} & IsoGr & Alg. \ref{alg:ss-strong} & IsoGr 
-		\\
+		$\#\F_p$ (bits) & Alg. \ref{alg:ss-strong} & IsoGr & Alg. 
+		\ref{alg:ss-strong} & IsoGr \\
 		\midrule[0.7pt]
 		33 & 0.004 & 0.003 & 0.300 & 0.180 \\
 		65 & 0.007 & 0.006 & 0.608 & 0.595 \\
@@ -710,10 +708,11 @@ get a random supersingular curve.
 \end{table}
 
 The average times for each set of curves are listed in columns "Ordinary" and "Supersingular" 
-respectively. As the timings suggest, detecting ordinary curves is substantially faster in average. 
-In fact, as mentioned in the proof of Proposition \ref{prop:ss-strong}, the timings under the 
-"Ordinary" column represent the average-case complexity of Algorithm \ref{alg:ss-strong} while the 
-ones under the "Supersingular" column represent the worst-case complexity.
+respectively. Columns "Alg. 2" and "IsoGr" refer to Algorithm 2 of Section \ref{sec:pit-for-div} 
+and the one in \cite{sutherland2012} respectively. As the timings suggest, detecting ordinary 
+curves is substantially faster in average. In fact, the timings under the "Ordinary" column 
+represent the average-case complexity of the Algorithms while the ones under the "Supersingular" 
+column represent the worst-case complexity.
 
 
 
