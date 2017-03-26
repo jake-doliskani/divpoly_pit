@@ -11,31 +11,8 @@ void CycloMod::mulMod(ZZ_pEX& result,
                       const ZZ_pEX& f,
                       const ZZ_pEX& g) {
 
-    ZZ_pE temp1;
-    ZZ_pE temp2;
-    ZZ_pEX tempResult;
-    clear(tempResult);
-
-    for (long k = 0; k < modulusDegree; k++) {
-        temp2 = 0;
-        for (long i = 0; i <= k; i++) {
-            mul(temp1, coeff(f, i), coeff(g, k - i));
-            add(temp2, temp2, temp1);
-        }
-
-        for (long i = k + 1; i < modulusDegree; i++) {
-            mul(temp1, coeff(f, i), coeff(g, modulusDegree + k - i));
-            add(temp2, temp2, temp1);
-        }
-
-        SetCoeff(tempResult, k, temp2);
-    }
-
-    result = tempResult;
-    tempResult.kill();
-
-    //    mul(result, f, g);
-    //    reduce(result, result);
+	mul(result, f, g);
+    reduce(result, result);
 }
 
 void CycloMod::invMod(ZZ_pEX& result, const ZZ_pEX& f) {
