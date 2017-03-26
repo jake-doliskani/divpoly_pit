@@ -14,115 +14,116 @@ using namespace std;
 
 class TestCase {
 public:
-	long numBits;
-	ZZ p;
-	ZZ a0;
-	ZZ a1;
-	ZZ b0;
-	ZZ b1;
+    long numBits;
+    ZZ p;
+    ZZ a0;
+    ZZ a1;
+    ZZ b0;
+    ZZ b1;
 };
 
 void readTestCases(vector<TestCase> &testCases, char* fileName) {
-	FILE *input = fopen(fileName, "r");
+    FILE *input = fopen(fileName, "r");
 
-	while (true) {
-		char str1[1000];
-		char str2[1000];
-		TestCase testCase;
+    while (true) {
+        char str1[1000];
+        char str2[1000];
+        TestCase testCase;
 
-		if (fscanf(input, "%li\n", &testCase.numBits) == EOF)
-			break;
+        if (fscanf(input, "%li\n", &testCase.numBits) == EOF)
+            break;
 
-		if (fscanf(input, "%s\n", str1) == EOF)
-			break;
-		testCase.p = to_ZZ(str1);
+        if (fscanf(input, "%s\n", str1) == EOF)
+            break;
+        testCase.p = to_ZZ(str1);
 
-		if (fscanf(input, "%s%*[*i + ]%s\n", str1, str2) == EOF)
-			break;
-		testCase.a1 = to_ZZ(str1);
-		testCase.a0 = to_ZZ(str2);
+        if (fscanf(input, "%s%*[*i + ]%s\n", str1, str2) == EOF)
+            break;
+        testCase.a1 = to_ZZ(str1);
+        testCase.a0 = to_ZZ(str2);
 
-		if (fscanf(input, "%s%*[*i + ]%s\n", str1, str2) == EOF)
-			break;
-		testCase.b1 = to_ZZ(str1);
-		testCase.b0 = to_ZZ(str2);
+        if (fscanf(input, "%s%*[*i + ]%s\n", str1, str2) == EOF)
+            break;
+        testCase.b1 = to_ZZ(str1);
+        testCase.b0 = to_ZZ(str2);
 
-		testCases.push_back(testCase);
-	}
+        testCases.push_back(testCase);
+    }
 
-	fclose(input);
+    fclose(input);
 }
 
-void init(TestCase testCase) {
-	ZZ_p::init(testCase.p);
+void initModuli(TestCase testCase) {
+    ZZ_p::init(testCase.p);
 
-	ZZ_pX f;
-	clear(f);
-	SetCoeff(f, 2, 1);
-	SetCoeff(f, 0, 1);
-	ZZ_pE::init(f);
+    ZZ_pX f;
+    clear(f);
+    SetCoeff(f, 2, 1);
+    SetCoeff(f, 0, 1);
+    ZZ_pE::init(f);
 }
 
 void getCurve(ZZ_pE &a, ZZ_pE &b, TestCase testCase) {
-	ZZ_pX temp;
-	SetCoeff(temp, 0, to_ZZ_p(testCase.a0));
-	SetCoeff(temp, 1, to_ZZ_p(testCase.a1));
-	a = to_ZZ_pE(temp);
-	SetCoeff(temp, 0, to_ZZ_p(testCase.b0));
-	SetCoeff(temp, 1, to_ZZ_p(testCase.b1));
-	b = to_ZZ_pE(temp);
-	temp.kill();
+    ZZ_pX temp;
+    SetCoeff(temp, 0, to_ZZ_p(testCase.a0));
+    SetCoeff(temp, 1, to_ZZ_p(testCase.a1));
+    a = to_ZZ_pE(temp);
+    SetCoeff(temp, 0, to_ZZ_p(testCase.b0));
+    SetCoeff(temp, 1, to_ZZ_p(testCase.b1));
+    b = to_ZZ_pE(temp);
+    temp.kill();
 }
 
 void testSupersingular() {
-	vector<TestCase> testCases;
-	char fileName[100] = "supersingular_params";
-	readTestCases(testCases, fileName);
+    vector<TestCase> testCases;
+    char fileName[100] = "supersingular_params";
+    readTestCases(testCases, fileName);
 
-	Util util;
-	cout << "numBits time type" << endl;
-	for (TestCase testCase : testCases) {
-		DivpolyPit divpolyPit;
-		IsogenyGraph isogenyGraph;
-		init(testCase);
-		ZZ_pE a, b;
-		getCurve(a, b, testCase);
-		isogenyGraph.getRandomSuperSingular(a, b, a, b, 20);
-		cout << testCase.numBits << " ";
-		long time = util.getTimeMillis();
-		bool isSupersingular = divpolyPit.isSupersingular(a, b);
-		time = util.getTimeMillis() - time;
-		cout << time << " ";
-		cout << isSupersingular << endl;
-	}
+    Util util;
+    cout << "numBits time type" << endl;
+    for (TestCase testCase : testCases) {
+        initModuli(testCase);
+        DivpolyPit divpolyPit;
+        IsogenyGraph isogenyGraph;
+        ZZ_pE a, b;
+        getCurve(a, b, testCase);
+        isogenyGraph.getRandomSuperSingular(a, b, a, b, 20);
+        cout << testCase.numBits << " ";
+        long time = util.getTimeMillis();
+        bool isSupersingular = isogenyGraph.isSupersingular(a, b);
+        time = util.getTimeMillis() - time;
+        cout << time << " ";
+        cout << isSupersingular << endl;
+    }
 }
 
 void testOrdinary() {
-	vector<TestCase> testCases;
-	char fileName[100] = "ordinary_params";
-	readTestCases(testCases, fileName);
+    vector<TestCase> testCases;
+    char fileName[100] = "ordinary_params";
+    readTestCases(testCases, fileName);
 
-	Util util;
-	cout << "numBits time type" << endl;
-	for (TestCase testCase : testCases) {
-		DivpolyPit divpolyPit;
-		init(testCase);
-		ZZ_pE a, b;
-		getCurve(a, b, testCase);
-		cout << testCase.numBits << " ";
-		long time = util.getTimeMillis();
-		bool isSupersingular = divpolyPit.isSupersingular(a, b);
-		time = util.getTimeMillis() - time;
-		cout << time << " ";
-		cout << isSupersingular << endl;
-	}
+    Util util;
+    cout << "numBits time type" << endl;
+    for (TestCase testCase : testCases) {
+        initModuli(testCase);
+        DivpolyPit divpolyPit;
+        IsogenyGraph isogenyGraph;
+        ZZ_pE a, b;
+        getCurve(a, b, testCase);
+        cout << testCase.numBits << " ";
+        long time = util.getTimeMillis();
+        bool isSupersingular = isogenyGraph.isSupersingular(a, b);
+        time = util.getTimeMillis() - time;
+        cout << time << " ";
+        cout << isSupersingular << endl;
+    }
 }
 
 int main(int argc, char** argv) {
 
-	testSupersingular();
-	//    testOrdinary();
+    //    testSupersingular();
+    testOrdinary();
 
-	return 0;
+    return 0;
 }
 

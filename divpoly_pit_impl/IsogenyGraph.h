@@ -1,3 +1,5 @@
+
+
 #ifndef ISOGENYGRAPH_H
 #define ISOGENYGRAPH_H
 
@@ -18,9 +20,14 @@ public:
     ZZ_pE getJInvariant(const ZZ_pE &a, const ZZ_pE &b);
     ZZ_pEX getModularPolynomial(const ZZ_pE &j);
     bool isSupersingular(const ZZ_pE &a, const ZZ_pE &b);
-    
+
 private:
 
+    ZZ_p a;
+    ZZ_p b;
+    ZZ_p c;
+    ZZ_p d;
+    ZZ_p e;
 };
 
 #endif /* ISOGENYGRAPH_H */
