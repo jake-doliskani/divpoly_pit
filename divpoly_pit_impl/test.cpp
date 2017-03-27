@@ -90,7 +90,7 @@ void testSupersingular() {
         isogenyGraph.getRandomSuperSingular(a, b, a, b, 20);
         cout << testCase.numBits << " ";
         long time = util.getTimeMillis();
-        bool isSupersingular = divpolyPit.isSupersingular(a, b);
+        bool isSupersingular = isogenyGraph.isSupersingular(a, b);
         time = util.getTimeMillis() - time;
         cout << time << " ";
         cout << isSupersingular << endl;

@@ -104,12 +104,11 @@
 \begin{abstract}
 	\noindent For an elliptic curve $E$ over a finite field $\F_q$, where $q$ ia a prime power, we 
 	propose new algorithms for testing the supersingularity of $E$. Our algorithms are based on the 
-	properties of the $p$-th division polynomial of $E$. In particular, we give an efficient 
-	algorithm for the Polynomial Identity Testing (PIT) problem for the case of $p$-th division 
-	polynomials.
+	Polynomial Identity Testing (PIT) problem for the $p$-th division polynomial of $E$. In 
+	particular, an efficient algorithm using points of high order on $E$ is given.
 	
-	\vspace*{1cm}
-	\noindent\textbf{Key words:} Division polynomial, Polynomial Identity Testing, Elliptic curve
+	\vspace*{7mm}
+	\noindent\textbf{MSC 2010:} Primary 11Y16, 14H52, Secondary 12Y05
 \end{abstract}
 
 
@@ -599,14 +598,16 @@ conjectured by Poonen\footnote{See \cite{voloch2007}.}.
 	contained in $X$. Then there is a constant $c > 0$ such that for every nonzero $x \in (X - Z) 
 	(\overline{\F_q})$, $x$ has order at least $(\#\F_q(x))^c$.
 \end{conjecture}
-In our context, this implies that if $P \in E(\F_{q^n})$ does not lie in any subfield, and $f$ is a 
-non-constant function on $E$ then either $P$ or $f(P)$ has order at least $q^{nc}$. So 
-forcing $f(P)$ to be of small order in $\F_{q^n}^*$ yields $P$ of large order in $E$.
+Chang et al.\cite{chang2014} have obtained strong results indirectly confirming the above 
+conjecture for general varieties. In our context, this implies that if $P \in E(\F_{q^n})$ does not 
+lie in any subfield, and $f$ is a non-constant function on $E$ then either $P$ or $f(P)$ has order 
+at least $q^{nc}$. Therefore, forcing $f(P)$ to be of small order in $\F_{q^n}^*$ yields $P$ of 
+large order in $E$.
 
-From the above one derives an algorithm for the PIT (\ref{equ:ss-strong}) as follows. Let $r > 0$ 
+From the above, one derives an algorithm for the PIT (\ref{equ:ss-strong}) as follows. Let $r > 0$ 
 be an integer such that the order $d$ of $p^2$ in $(\Z/r\Z)^*$ satisfies $d^{2 - \epsilon} > r$. 
-Let $K = \F_q[X]/g(X)$ where $g(X)$ is an irreducible factor of the  $r$-th cyclotomic 
-polynomial, and let $x$ be the image of $X$ in $K$. A point $P \in E$ with first coordinate $x$ 
+Let $K = \F_q[T]/g(T)$ where $g(T)$ is an irreducible factor of the  $r$-th cyclotomic 
+polynomial, and let $t$ be the image of $T$ in $K$. A point $P \in E$ with first coordinate $t$ 
 lies in $E(F)$ where $[F : K] \le 2$. If $P$ satisfies (\ref{equ:ss-strong}) then $\ang{P}$ is 
 invariant under the action of $\pi$. Then by Theorem \ref{theo:order-ell} the order of $P$ is at 
 least $\exp(d^\delta)$ for some constant $\delta > 0$. If $d$ is large enough, say $d = O(\log p)$, 
@@ -620,7 +621,7 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 		\REQUIRE PIT (\ref{equ:ss-strong})
 		\ENSURE true if the PIT holds, and false otherwise
 		\STATE\label{step:ss-eval}
-		compute $\psi_p(a)$ for a ransom $a \in \F_q$.
+		compute $\psi_p(a)$ for a random $a \in \F_q$.
 		\IF {$\psi(a) \ne \pm 1$}
 			\STATE return false
 		\ENDIF
@@ -711,11 +712,11 @@ get a random supersingular curve.
 	\label{table:exper}
 \end{table}
 
-The average times for each set of curves are listed in columns "Ordinary" and "Supersingular" 
-respectively. Columns "Alg. 2" and "IsoGr" refer to Algorithm 2 of Section \ref{sec:pit-for-div} 
-and the one in \cite{sutherland2012} respectively. As the timings suggest, detecting ordinary 
-curves is substantially faster in average. In fact, the timings under the "Ordinary" column 
-represent the average-case complexity of the Algorithms while the ones under the "Supersingular" 
+The average times for each set of curves are listed in columns ``Ordinary" and ``Supersingular". 
+Columns ``Alg. 2" and ``IsoGr" refer to Algorithm 2 of Section \ref{sec:pit-for-div} 
+and the one in \cite{sutherland2012}, respectively. As the timings suggest, detecting ordinary 
+curves is substantially faster on average. In fact, the timings under the ``Ordinary" column 
+represent the average-case complexity of the algorithms while the ones under the ``Supersingular" 
 column represent the worst-case complexity.
 
 
