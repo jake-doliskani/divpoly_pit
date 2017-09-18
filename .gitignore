@@ -6,6 +6,7 @@
 *.out
 *.toc
 *.fmt
+*.spl
 *.fot
 *.cb
 *.cb2
