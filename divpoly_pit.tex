@@ -1,4 +1,4 @@
-\documentclass[review]{elsarticle}
+\documentclass[12pt]{article}
 
 \usepackage[margin = 1in]{geometry}
 \usepackage{graphicx}              
@@ -16,6 +16,7 @@
 \usepackage{makecell}
 \usepackage{booktabs}
 \usepackage{tikz}
+\usepackage{authblk}
 \usetikzlibrary{positioning, arrows}
 
 
@@ -87,40 +88,36 @@
 \def\CC{\ensuremath{\mathsf{C}}}
 \def\euler{\ensuremath{\varphi}}
 
-\journal{Journal of Number Theory}
-\bibliographystyle{elsarticle-num}
+\title{On Division Polynomial PIT and Supersingularity}
 
+\author[1]{Javad Doliskani}
+\affil[1]{\small Institute for Quantum Computing, University of Waterloo}
 
 \date{}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \begin{document}
 
-\begin{frontmatter}
-	
-\title{On Division Polynomial PIT and Supersingularity}
-
-\author{Javad Doliskani}
-\address{Institute for Quantum Computing, University of Waterloo}
-\ead{javad.doliskani@uwaterloo.ca}
+\maketitle
 
 \begin{abstract}
-	For an elliptic curve $E$ over a finite field $\F_q$, where $q$ is a prime power, we 
+	\noindent For an elliptic curve $E$ over a finite field $\F_q$, where $q$ is a prime power, we 
 	propose new algorithms for testing the supersingularity of $E$. Our algorithms are based on the 
 	Polynomial Identity Testing (PIT) problem for the $p$-th division polynomial of $E$. In 
 	particular, an efficient algorithm using points of high order on $E$ is given.
+	
+	\vspace*{7mm}
+	\noindent\textbf{Key words:} Division polynomials; Polynomial Identity Testing; Elliptic curves 
+	\\
+	\noindent\textbf{MSC 2010:} Primary 11Y16, 14H52, Secondary 12Y05
 \end{abstract}
-	
-\begin{keyword}
-	Division polynomials\sep Polynomial Identity Testing\sep Elliptic curves 
-	\MSC[2010] Primary 11Y16\sep 14H52\sep Secondary 12Y05
-\end{keyword}
-	
-\end{frontmatter}
 
 
+%/////////////////////////////////////////////////////
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Introduction}
 \label{sec:intro}
@@ -657,10 +654,6 @@ Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 	\end{algorithmic}
 \end{algorithm}
 
-In Step \ref{step:ss-find-par} of the algorithm, we could always take $d = \log p$. Experiment, 
-however, show that one can take $d = c\log p$ for a constant $c$ much smaller than 1. Also 
-$\epsilon$ can be set, for example, to a small value like $0.1$. The following proves Theorem 
-\ref{theo:main}.
 \begin{proposition}
 	\label{prop:ss-strong}
 	Algorithm \ref{alg:ss-strong} is correct and for a randomly selected curve $E/\F_q$ has average 
@@ -752,8 +745,7 @@ supported by NSERC, CryptoWorks21, and Public Works and Government Services Cana
 %/////////////////////////////////////////////////////
 
 
-\section*{References}
-
+\bibliographystyle{plain}
 \bibliography{references}
 
 \end{document}
