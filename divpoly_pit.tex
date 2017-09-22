@@ -603,30 +603,46 @@ E$ and a function $f$ on $E$, under some conditions, one of $P, f(P)$ has large 
 respective group. For appropriate choices of $\epsilon$ in Theorem \ref{theo:order-ell} one gets 
 large enough $\delta$, and hence $P$ of large order, without having to choose $d$ very large. 
 Experiments show, however, that the lower bound of Theorem \ref{theo:order-ell} is very far from 
-optimal. In fact, experimental use-cases are better estimated by the following stronger lower bound 
-conjectured by Poonen\footnote{See \cite{voloch2007}.}.
-\begin{conjecture}[Poonen]
-	\label{conj:poonen}
-	Let $X/\F_q$ be a semiabelian variety and let $Y \subset X$ be a closed subvariety. Let $Z$ be 
-	the union of all translates of positive-dimensional semiabelian varieties $X'/\overline{\F_q}$ 
-	contained in $X$. Then there is a constant $c > 0$ such that for every nonzero $x \in (X - Z) 
-	(\overline{\F_q})$, $x$ has order at least $(\#\F_q(x))^c$.
-\end{conjecture}
-Chang et al.\cite{chang2014} have obtained strong results indirectly confirming the above 
-conjecture for general varieties. In our context, this implies that if $P \in E(\F_{q^n})$ does not 
-lie in any subfield, and $f$ is a non-constant function on $E$ then either $P$ or $f(P)$ has order 
-at least $q^{nc}$. Therefore, forcing $f(P)$ to be of small order in $\F_{q^n}^*$ yields $P$ of 
-large order in $E$.
+optimal. 
 
-From the above, one derives an algorithm for the PIT (\ref{equ:ss-strong}) as follows. Let $r > 0$ 
-be an integer such that the order $d$ of $p^2$ in $(\Z/r\Z)^*$ satisfies $d^{2 - \epsilon} > r$. 
-Let $K = \F_q[T]/g(T)$ where $g(T)$ is an irreducible factor of the  $r$-th cyclotomic 
-polynomial, and let $t$ be the image of $T$ in $K$. A point $P \in E$ with first coordinate $t$ 
-lies in $E(F)$ where $[F : K] \le 2$. If $P$ satisfies (\ref{equ:ss-strong}) then $\ang{P}$ is 
-invariant under the action of $\pi$. Then by Theorem \ref{theo:order-ell} the order of $P$ is at 
-least $\exp(d^\delta)$ for some constant $\delta > 0$. If $d$ is large enough, say $d = O(\log p)$, 
-then $P$ will have order large enough, say $> 2p + 2$, to imply that $\psi_p = 1$. This gives 
-Algorithm \ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
+A closer look at the proof of \cite[Theorem 1.1]{voloch2010} shows that the point $P$ has order at 
+least $\binom{\abs{J}}{T}$ where $\abs{J} \gg d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}$ and $T = 
+[d^\eta]$ for some $\eta > 0$. The bound $\exp(d^\delta)$ is just an approximation of the binomial 
+coefficient. In practice we could ignore this approximation and use the value of the binomial 
+coefficient directly. 
+
+%In fact, experimental use-cases are better estimated by the following stronger lower bound 
+%conjectured by Poonen\footnote{See \cite{voloch2007}.}.
+%\begin{conjecture}[Poonen]
+%	\label{conj:poonen}
+%	Let $X/\F_q$ be a semiabelian variety and let $Y \subset X$ be a closed subvariety. Let $Z$ be 
+%	the union of all translates of positive-dimensional semiabelian varieties $X'/\overline{\F_q}$ 
+%	contained in $X$. Then there is a constant $c > 0$ such that for every nonzero $x \in (X - Z) 
+%	(\overline{\F_q})$, $x$ has order at least $(\#\F_q(x))^c$.
+%\end{conjecture}
+%Chang et al.\cite{chang2014} have obtained strong results indirectly confirming the above 
+%conjecture for general varieties. In our context, this implies that if $P \in E(\F_{q^n})$ does 
+%not 
+%lie in any subfield, and $f$ is a non-constant function on $E$ then either $P$ or $f(P)$ has order 
+%at least $q^{nc}$. Therefore, forcing $f(P)$ to be of small order in $\F_{q^n}^*$ yields $P$ of 
+%large order in $E$.
+%
+
+Explicit parameters can be computed as follows. Let $r > 0$ be a prime such that $p^2$ is a 
+generator of $(\Z/r\Z)^*$. Then $p^2$ has order $d = r - 1$, and $d^{2 - \epsilon} > r$ for a wide 
+range of values of $0 < \epsilon < 1$. Now the $r$-th cyclotomic polynomial $\Phi_r(T)$ is 
+irreducible over $\F_q$ so that $K = \F_q[T]/\Phi_r(T)$ is a field. Let $t$ be the image of $T$ in 
+$K$. A point $P \in E$ with first coordinate $t$ lies in $E(F)$ where $[F : K] \le 2$. If $P$ 
+satisfies (\ref{equ:ss-strong}) then $\ang{P}$ is invariant under the action of $\pi$. Then, by the 
+above, the order of $P$ is at least $\binom{\abs{J}}{T}$. We need choose a suitable $r$ and 
+optimize for the parameters $\epsilon, \eta$ so that
+\begin{equation}
+	\label{equ:binom}
+	\binom{\abs{J}}{T} \gg \binom{d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}}{d^\eta} \approx 
+	\binom{r^{1 - \epsilon / 3} - r^{\epsilon / 3}}{r^\eta} \ge 2p + 2.
+\end{equation}
+Then $P$ will have order large enough to imply that $\psi_p = 1$. This gives Algorithm 
+\ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
 
 \begin{algorithm}[H]
 	\caption{Testing supersingularity}
