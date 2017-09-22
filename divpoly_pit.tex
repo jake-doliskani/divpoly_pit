@@ -95,6 +95,7 @@
 
 \date{}
 
+\setlength{\parindent}{0pt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -302,14 +303,15 @@ We shall only need modular computation of division polynomials in this paper. Th
 	\begin{algorithmic}[1]
 		\REQUIRE Integer $m \ge 1$, and polynomial $f(x) \in \F_q[x]$ of degree $n$
 		\ENSURE The division polynomials $f_{m - 3}, \dots, f_{m + 5} \pmod{f}$
-		\STATE let $b_kb_{k - 1} \cdots b_0$ be the binary representation of $m$
-		\STATE set $r, s$ as follows \\
+		\STATE Let $b_kb_{k - 1} \cdots b_0$ be the binary representation of $m$
+		\STATE Set $r, s$ as follows \\
 		$r = 3, s = 2$~ if~ $b_kb_{k - 1} = 11$ \\
 		$r = 4, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 100$ \\
 		$r = 5, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 101$
-		\STATE set $j = r$, and compute $f_{j - 3}, \dots, f_{j + 5} \pmod{f}$
-		\STATE\label{step:divpoly-loop} for $i = s$ down to $0$ \\
-		compute $f_{2j + b_i - 3}, \dots, f_{2j + b_i + 5} \pmod{f}$ from $f_{j - 3}, \dots, f_{j + 
+		\STATE Set $j = r$, and compute $f_{j - 3}, \dots, f_{j + 5} \pmod{f}$
+		\STATE\label{step:divpoly-loop} 
+		For $i = s$ down to $0$ \\
+		Compute $f_{2j + b_i - 3}, \dots, f_{2j + b_i + 5} \pmod{f}$ from $f_{j - 3}, \dots, f_{j + 
 		5}$ using relations (\ref{equ:divpoly3}) \\
 		$j \leftarrow 2j + b_i$
 		\RETURN $f_{m - 3}, \dots, f_{m + 5}$
@@ -436,9 +438,9 @@ formula (\ref{equ:mult-p}) we get the stronger condition
 \begin{equation}
 \label{equ:ss-strong}
 	\arraycolsep=1.4pt
-	\begin{array}{lll}
-		\psi_p(x) & = & 1 \\
-		\psi_{p - 1}\psi_{p + 1}(x) & = & x - x^{p^2}
+	\begin{array}{l}
+		\psi_p(x) = 1 \\
+		\psi_{p - 1}\psi_{p + 1}(x) = x - x^{p^2}
 	\end{array}
 \end{equation}
 for supersingularity. Note that in this case the univariate polynomial $\psi_{p - 1}\psi_{p + 
@@ -446,9 +448,9 @@ for supersingularity. Note that in this case the univariate polynomial $\psi_{p 
 point $P \in E$ then $E$ is ordinary. Otherwise, not much can be said about $E$ unless the point 
 $P$ is chosen more carefully. More precisely, we have
 \begin{proposition}
-	Let $P \in E$ be a point of order $r$ that satisfies (\ref{equ:ss-strong}). Then $\psi_p(kP) 
-	= 1$ for all odd $1 \le k \le r - 1$. If moreover $\psi_p(2P) = 1$ then $\psi_p(kP) = 1$ for 
-	all $1 \le k \le r - 1$.
+	Let $P \in E$ be a point of order $r$, with $(r, p) = 1$, that satisfies (\ref{equ:ss-strong}). 
+	Then $\psi_p(kP) = 1$ for all odd $1 \le k \le r - 1$. If moreover $\psi_p(2P) = 1$ then 
+	$\psi_p(kP) = 1$ for all $1 \le k \le r - 1$.
 \end{proposition}
 \begin{proof}
 	For all positive integers $m, n$ we have
@@ -600,68 +602,52 @@ $\delta > 0$. We therefore have
 \end{theorem}
 One concludes from the above theorems and the ones in \cite{voloch2010} that given a point $P \in 
 E$ and a function $f$ on $E$, under some conditions, one of $P, f(P)$ has large order in its 
-respective group. For appropriate choices of $\epsilon$ in Theorem \ref{theo:order-ell} one gets 
-large enough $\delta$, and hence $P$ of large order, without having to choose $d$ very large. 
-Experiments show, however, that the lower bound of Theorem \ref{theo:order-ell} is very far from 
-optimal. 
+respective group. Therefore, forcing $f(P)$ to be of small order in $\F_q^*$ yields $P$ of large 
+order in $E$. For appropriate choices of $\epsilon$ in Theorem \ref{theo:order-ell}, one gets large 
+enough $\delta$, and hence $P$ of large order, without having to choose $d$ very large. Experiments 
+show, however, that the lower bound of the theorem is very far from optimal. 
 
 A closer look at the proof of \cite[Theorem 1.1]{voloch2010} shows that the point $P$ has order at 
 least $\binom{\abs{J}}{T}$ where $\abs{J} \gg d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}$ and $T = 
 [d^\eta]$ for some $\eta > 0$. The bound $\exp(d^\delta)$ is just an approximation of the binomial 
-coefficient. In practice we could ignore this approximation and use the value of the binomial 
+coefficient. In practice, we could ignore this approximation and use the value of the binomial 
 coefficient directly. 
 
-%In fact, experimental use-cases are better estimated by the following stronger lower bound 
-%conjectured by Poonen\footnote{See \cite{voloch2007}.}.
-%\begin{conjecture}[Poonen]
-%	\label{conj:poonen}
-%	Let $X/\F_q$ be a semiabelian variety and let $Y \subset X$ be a closed subvariety. Let $Z$ be 
-%	the union of all translates of positive-dimensional semiabelian varieties $X'/\overline{\F_q}$ 
-%	contained in $X$. Then there is a constant $c > 0$ such that for every nonzero $x \in (X - Z) 
-%	(\overline{\F_q})$, $x$ has order at least $(\#\F_q(x))^c$.
-%\end{conjecture}
-%Chang et al.\cite{chang2014} have obtained strong results indirectly confirming the above 
-%conjecture for general varieties. In our context, this implies that if $P \in E(\F_{q^n})$ does 
-%not 
-%lie in any subfield, and $f$ is a non-constant function on $E$ then either $P$ or $f(P)$ has order 
-%at least $q^{nc}$. Therefore, forcing $f(P)$ to be of small order in $\F_{q^n}^*$ yields $P$ of 
-%large order in $E$.
-%
-
-Explicit parameters can be computed as follows. Let $r > 0$ be a prime such that $p^2$ is a 
-generator of $(\Z/r\Z)^*$. Then $p^2$ has order $d = r - 1$, and $d^{2 - \epsilon} > r$ for a wide 
-range of values of $0 < \epsilon < 1$. Now the $r$-th cyclotomic polynomial $\Phi_r(T)$ is 
-irreducible over $\F_q$ so that $K = \F_q[T]/\Phi_r(T)$ is a field. Let $t$ be the image of $T$ in 
-$K$. A point $P \in E$ with first coordinate $t$ lies in $E(F)$ where $[F : K] \le 2$. If $P$ 
-satisfies (\ref{equ:ss-strong}) then $\ang{P}$ is invariant under the action of $\pi$. Then, by the 
-above, the order of $P$ is at least $\binom{\abs{J}}{T}$. We need choose a suitable $r$ and 
-optimize for the parameters $\epsilon, \eta$ so that
+Explicit parameters can be computed as follows. Let $r > 0$ be a prime such that $q$ is a generator 
+of $(\Z/r\Z)^*$. Then $q$ has order $d = r - 1$, and $d^{2 - \epsilon} > r$ for a wide range of 
+values of $0 < \epsilon < 1$. Now the $r$-th cyclotomic polynomial $\Phi_r(T)$ is irreducible over 
+$\F_q$ and so $K = \F_q[T]/\Phi_r(T)$ is a field. Let $t$ be the image of $T$ in $K$. A point $P 
+\in E$ with first coordinate $t$ lies in $E(F)$ where $[F : K] \le 2$. If $P$ satisfies 
+(\ref{equ:ss-strong}) then $\ang{P}$ is invariant under the action of $\pi$. Then, by the above, 
+the order of $P$ is at least $\binom{\abs{J}}{T}$. We need to choose a suitable $r$ and optimize 
+for the parameters $\epsilon, \eta$ so that
 \begin{equation}
 	\label{equ:binom}
 	\binom{\abs{J}}{T} \gg \binom{d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}}{d^\eta} \approx 
 	\binom{r^{1 - \epsilon / 3} - r^{\epsilon / 3}}{r^\eta} \ge 2p + 2.
 \end{equation}
-Then $P$ will have order large enough to imply that $\psi_p = 1$. This gives Algorithm 
-\ref{alg:ss-strong} for testing the PIT (\ref{equ:ss-strong}).
+It suffices to take $r \in O(\log p)$ and appropriate $\epsilon, \eta$ to obtain the bound in 
+\eqref{equ:binom}. Then $P$ will have order large enough to imply that $\psi_p = 1$. 
 
 \begin{algorithm}[H]
 	\caption{Testing supersingularity}
 	\label{alg:ss-strong}
 	\begin{algorithmic}[1]
 		\REQUIRE An elliptic curve $E$ over $\F_q$
-		\ENSURE true if $E$ is super singular, and false otherwise
+		\ENSURE True if $E$ is supersingular, and false otherwise
 		\STATE\label{step:ss-eval}
-		compute $\psi_p(a)$ for a random $a \in \F_q$.
+		Compute $\psi_p(a)$ for a random $a \in \F_q$.
 		\IF {$\psi(a) \ne \pm 1$}
 			\STATE return false
 		\ENDIF
 		\STATE\label{step:ss-find-par}
-		find $r, d = \Theta(\log p)$ such that the order $d$ of $p^2$ in $(\Z/r\Z)^*$ satisfies 
-		$d^{2 - \epsilon} > r$
-		\STATE\label{step:ss-factor}
-		obtain an irreducible factor $g$ of the $r$-th cyclotomic polynomial
+		Find $r \in O(\log p)$ such that $q$ generates $(\Z/r\Z)^*$ and such that \eqref{equ:binom} 
+		holds
+		\STATE\label{step:cyclo}
+		Obtain the $r$-th cyclotomic polynomial $\Phi_r(x)$
 		\STATE\label{step:ss-psi}
-		compute $x^{p^2}, \psi_p, \psi_{p - 1}, \psi_{p + 1} \bmod g$
+		Compute $x^{p^2}, f_p, f_{p - 1}, f_{p + 1} \bmod \Phi_r(x)$ using Algorithm 
+		\ref{alg:divpoly-comp}
 		\IF {(\ref{equ:ss-strong}) holds}
 			\STATE return true
 		\ELSE
@@ -669,33 +655,50 @@ Then $P$ will have order large enough to imply that $\psi_p = 1$. This gives Alg
 		\ENDIF
 	\end{algorithmic}
 \end{algorithm}
-
+The following proposition proves Theorem \ref{theo:main}.
 \begin{proposition}
 	\label{prop:ss-strong}
-	Algorithm \ref{alg:ss-strong} is correct and for a randomly selected curve $E/\F_q$ has average 
-	complexity $\tildO(\log p)$ operations in $\F_p$. The worst-case complexity of the algorithm is 
-	$\tildO(\log^2 p)$ operations in $\F_p$.
+	Algorithm \ref{alg:ss-strong} is correct and for a randomly selected curve $E/\F_q$ has 
+	average-case complexity $\tildO(\log p)$ operations in $\F_p$. The worst-case complexity of the 
+	algorithm is $\tildO(\log^2 p)$ operations in $\F_p$.
 \end{proposition}
 \begin{proof}
-	Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$. Since most curves 
-	$E/\F_q$ are ordinary and they almost always fail to satisfy the condition $\psi(a) \ne \pm 1$, 
-	this will be the average-case complexity of the algorithm. The integers $r, d$ in Step 
-	\ref{step:ss-find-par} can be computed in negligible time; For example, if $r$ is a randomly 
-	chosen prime then $r - 1$ has a prime factor larger than $\sqrt{r}$ most of the time and so 
-	$d^2 > r$ with high probability. This means we need only a few trials to find such $r$, and so 
-	the dominating cost is computing the order of an element in $(\Z/r\Z)^*$ for a small $r$.
+	Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$ using Algorithm 
+	\ref{alg:divpoly-comp}. Since most curves $E/\F_q$ are ordinary and they almost always fail to 
+	satisfy the condition $\psi(a) \ne \pm 1$, this will be the average-case complexity of the 
+	algorithm. The integer $r$ in Step \ref{step:ss-find-par} can be computed in negligible time. 
+	In fact, for a random prime $r$, the probability that $q$ is a generator of $(\Z/r\Z)^*$ is
+	$\varphi(r - 1) / (r - 1)$ where $\varphi$ is the Euler totient function.
 	
-	Step \ref{step:ss-factor} can be done using $\tildO(\log^2 	p)$ operations in $\F_p$, 
-	\cite{shoup1994}. Step \ref{step:ss-psi} is performed at the cost of $\tildO(\log^2 p)$ 
-	operations in $\F_p$ using Algorithm \ref{alg:divpoly-comp}. Therefore, the total cost of the 
-	Algorithm \ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in $\F_p$.
+	Step \ref{step:cyclo} is automatic since the $r$-th cyclotomic polynomial is just $\Phi_r(x) = 
+	x^{r - 1} + \cdots + x + 1$. Step \ref{step:ss-psi} is performed at the cost of $\tildO(\log^2 
+	p)$ operations in $\F_p$ using Algorithm \ref{alg:divpoly-comp}. Therefore, the worst-case 
+	complexity of Algorithm \ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in 
+	$\F_p$.
 \end{proof}
 
 \begin{remark}
-	The point $P \in E(K)$ described above also satisfies the hypothesis of Conjecture 
-	\ref{conj:poonen}. If the Conjecture holds then we only need $d > 2 / c$ which, according to 
-	our experiments, is a small constant. In this case, Algorithm \ref{alg:ss-strong} always runs 
-	in $\tildO(\log p)$ operations in $\F_p$.
+	Our experiments have been better estimated by the following stronger lower bound conjectured by 
+	Poonen\footnote{See \cite{voloch2007}.}.
+	\begin{conjecture}[Poonen]
+		\label{conj:poonen}
+		Let $X/\F_q$ be a semiabelian variety and let $Y \subset X$ be a closed subvariety. Let $Z$ 
+		be the union of all translates of positive-dimensional semiabelian varieties $X' / 
+		\overline{\F_q}$ contained in $X$. Then there is a constant $c > 0$ such that for every 
+		nonzero $x \in (X - Z)(\overline{\F_q})$, $x$ has order at least $(\#\F_q(x))^c$.
+	\end{conjecture}
+	Chang et al.\cite{chang2014} have obtained strong results indirectly confirming the above 
+	conjecture for general varieties. In our context, this implies that if $P \in E(\F_q)$ does 
+	not lie in any subfield, and $f$ is a non-constant function on $E$, then either $P$ or $f(P)$ 
+	has order at least $(\#\F_q(P))^c$. 
+	
+	The point $P \in E(K)$ used in Algorithm \ref{alg:ss-strong} also satisfies the hypothesis of 
+	Conjecture \ref{conj:poonen}. If the conjecture holds, then $P$ has order $\ge q^{rc} = 
+	p^{2rc}$. This means we only need to take $r \approx 1 / 2c$. In this case, Algorithm 
+	\ref{alg:ss-strong} always runs in $\tildO(\log p)$ operations in $\F_p$. Although, according 
+	to our experiments, values of $r$ obtained this way are small, in theory we do not know of any 
+	explicit bounds on $c$. This does not allow us to use Conjecture \ref{conj:poonen} for testing 
+	the supersingularity of $E$.
 \end{remark}
 
 
