@@ -250,7 +250,7 @@ curves. They are also heavily used in implementations of the point counting algo
 
 In this subsection, we briefly review an algorithm that efficiently computes the division 
 polynomials. To compute $\psi_n$, the idea is to simply use the recursive relations 
-(\ref{equ:divpoly1}) to achieve a double-and-add scheme on the subscript $n$. First, we should note 
+\eqref{equ:divpoly1} to achieve a double-and-add scheme on the subscript $n$. First, we should note 
 that it is possible to characterize non-$2$-torsion points with univariate versions of the 
 $\psi_n$. This makes computations much easier. Define
 \[
@@ -260,9 +260,9 @@ f_m =
 	\psi_m / \psi_2 & m \text{ even}.
 \end{cases}
 \]
-Then for non-$2$-torsion $P \in E$ we have $P \in E[n]$ if and only if $f(P) = 0$. Let $F = 
+Then for non-$2$-torsion $P \in E$ we have $P \in E[n]$ if and only if $f_n(P) = 0$. Let $F = 
 \psi_2^2 = 4(x^3 + ax + b)$. Then the following relations for the $f_m$ can be derived from 
-(\ref{equ:divpoly1}).
+\eqref{equ:divpoly1}.
 \begin{equation}
 \label{equ:divpoly2}
 	\begin{array}{rll}
@@ -282,7 +282,7 @@ Then for non-$2$-torsion $P \in E$ we have $P \in E[n]$ if and only if $f(P) = 0
 From the indices involved in the above relations it is immediate that given $f_{i - 3}, \dots, f_{i 
 + 5}$, one can compute the polynomials $f_{2i - 3}, \dots, f_{2i + 5}$, or the polynomials $f_{2(i 
 + 1) - 3}, \dots, f_{2(i + 1) + 5}$. We can save some multiplications by introducing $S_i = f_{i - 
-1}f_{i + 1}$, $T_i = f_i^2$ and rewriting (\ref{equ:divpoly2}) as
+1}f_{i + 1}$, $T_i = f_i^2$ and rewriting \eqref{equ:divpoly2} as
 \begin{equation}
 \label{equ:divpoly3}
 \begin{array}{rll}
@@ -312,7 +312,7 @@ We shall only need modular computation of division polynomials in this paper. Th
 		\STATE\label{step:divpoly-loop} 
 		For $i = s$ down to $0$ \\
 		Compute $f_{2j + b_i - 3}, \dots, f_{2j + b_i + 5} \pmod{f}$ from $f_{j - 3}, \dots, f_{j + 
-		5}$ using relations (\ref{equ:divpoly3}) \\
+		5}$ using relations \eqref{equ:divpoly3} \\
 		$j \leftarrow 2j + b_i$
 		\RETURN $f_{m - 3}, \dots, f_{m + 5}$
 	\end{algorithmic}
@@ -379,8 +379,8 @@ For supersingular elliptic curves we have
 \begin{proof}
 	When $E$ is supersingular we have $t = \pm 2p$ so that the characteristic polynomial of the 
 	Frobenius factorizes as $(X \pm p)^2$. Therefore, $\pi(x, y) = \pm [p](x, y)$. Comparing the 
-	first coordinates and considering the multiplication-by-$p$ formula (\ref{equ:mult-p}) gives 
-	$x^{p^2} = \phi_p(x) / \psi_p(x)^2$. Since $\phi_p(x) = x^{p^2} + \cdots$, see 
+	first coordinates and considering the multiplication-by-$p$ formula \eqref{equ:mult-p} gives 
+	$x^{p^2} = \phi_p(x) / \psi_p(x)^2$. Since $\phi_p(x) = x^{p^2} + \cdots$	
 	\cite{washington2008}, it follows that $\psi_p(x) = \pm 1$.
 \end{proof}
 It is not hard to distinguish the cases $\psi_p = 1$ and $\psi_p = -1$ in Lemma 
@@ -434,7 +434,7 @@ $\tildO(\log^4 p)$ operations in $\F_p$.
 \label{sec:pit-h-order}
 
 From the identity $\psi_p(x) = 1$ for a supersingular curve $E/\F_q$ and the multiplication-by-$p$ 
-formula (\ref{equ:mult-p}) we get the stronger condition
+formula \eqref{equ:mult-p} we get the stronger condition
 \begin{equation}
 \label{equ:ss-strong}
 	\arraycolsep=1.4pt
@@ -448,7 +448,7 @@ for supersingularity. Note that in this case the univariate polynomial $\psi_{p 
 point $P \in E$ then $E$ is ordinary. Otherwise, not much can be said about $E$ unless the point 
 $P$ is chosen more carefully. More precisely, we have
 \begin{proposition}
-	Let $P \in E$ be a point of order $r$, with $(r, p) = 1$, that satisfies (\ref{equ:ss-strong}). 
+	Let $P \in E$ be a point of order $r$, with $(r, p) = 1$, that satisfies \eqref{equ:ss-strong}. 
 	Then $\psi_p(kP) = 1$ for all odd $1 \le k \le r - 1$. If moreover $\psi_p(2P) = 1$ then 
 	$\psi_p(kP) = 1$ for all $1 \le k \le r - 1$.
 \end{proposition}
@@ -460,12 +460,12 @@ $P$ is chosen more carefully. More precisely, we have
 	\end{equation}
 	This follows from comparing divisors on both sides. When $k < r$ is odd, $\psi_k$ is a 
 	univariate polynomial and so $\psi_k(P)$ only involves the $x$-coordinate of $P$. So if $P \in 
-	E$ satisfies (\ref{equ:ss-strong}) then $x_{pP} = x_{\pi P}$, and hence 
+	E$ satisfies \eqref{equ:ss-strong} then $x_{pP} = x_{\pi P}$, and hence 
 	\begin{equation}
 	\label{equ:frob-p}
 		\psi_k(P)^{p^2} = \psi_k(\pi(P)) = \psi_k(pP).
 	\end{equation}
-	Therefore, for $(m, n) = (p, k)$ and $(m, n) = (k, p)$ identity (\ref{equ:divpoly-comp}) gives
+	Therefore, for $(m, n) = (p, k)$ and $(m, n) = (k, p)$ identity \eqref{equ:divpoly-comp} gives
 	\[
 	\arraycolsep=1.4pt
 	\begin{array}{rll}
@@ -476,13 +476,13 @@ $P$ is chosen more carefully. More precisely, we have
 	\end{array}
 	\]
 	where $\psi_k(pP) \ne 0$ since $P$ is of order $r > k$. Comparing the above identities proves 
-	the first part. For the second claim we show that (\ref{equ:frob-p}) holds for any $k$, and the 
-	rest of the proof is the same. Using (\ref{equ:divpoly-comp}) with $(m, n) = (2, p)$ and $(m, 
+	the first part. For the second claim we show that \eqref{equ:frob-p} holds for any $k$, and the 
+	rest of the proof is the same. Using \eqref{equ:divpoly-comp} with $(m, n) = (2, p)$ and $(m, 
 	n) = (p, 2)$ we get $2y_{\pi P} = \psi_2(\pi(P)) = \psi_2(pP) = 2y_{pP}$ which implies $\pi(P) 
 	= pP$, and hence $\psi_k(\pi(P)) = \psi_k(pP)$ for any $k$.
 \end{proof}
-The above result enables us to check the PIT (\ref{equ:ss-strong}) using a high order point as 
-follows. Let $P \in E$ be a point of order $r > 2p + 2$. If $P$ satisfies (\ref{equ:ss-strong}) 
+The above result enables us to check the PIT \eqref{equ:ss-strong} using a high order point as 
+follows. Let $P \in E$ be a point of order $r > 2p + 2$. If $P$ satisfies \eqref{equ:ss-strong} 
 then $\tilde{\psi}_p(kP)^p = \psi_p(kP) = 1$ hence $\tilde{\psi}_p(kP) = 1$ for at least $p + 1$ 
 values of $k$. This means $\tilde{\psi}_p(x_{kP}) = 1$ for at least $(p + 1) / 2$ distinct 
 abscissas of the points $kP$. But the univariate polynomial $\tilde{\psi}_p$ has degree $(p - 1) / 
@@ -541,7 +541,7 @@ closure of $K(X)$. Then Lemma 2.2 in \cite{voloch2010} becomes
 	\label{equ:diff-mod}
 	y_{n_i}^*: \Omega_{X_{n_i}} \longrightarrow \Omega_{C_L}
 	\end{equation}
-	are injective. Now it follows from (\ref{equ:curve-hom}) and (\ref{equ:diff-mod}) that the 
+	are injective. Now it follows from \eqref{equ:curve-hom} and \eqref{equ:diff-mod} that the 
 	$\omega_{n_i}$ reside in different extensions inside $\Omega_{C_L}$ so they must be 
 	$\Z$-linearly independent.
 \end{proof}
@@ -618,7 +618,7 @@ of $(\Z/r\Z)^*$. Then $q$ has order $d = r - 1$, and $d^{2 - \epsilon} > r$ for 
 values of $0 < \epsilon < 1$. Now the $r$-th cyclotomic polynomial $\Phi_r(T)$ is irreducible over 
 $\F_q$ and so $K = \F_q[T]/\Phi_r(T)$ is a field. Let $t$ be the image of $T$ in $K$. A point $P 
 \in E$ with first coordinate $t$ lies in $E(F)$ where $[F : K] \le 2$. If $P$ satisfies 
-(\ref{equ:ss-strong}) then $\ang{P}$ is invariant under the action of $\pi$. Then, by the above, 
+\eqref{equ:ss-strong} then $\ang{P}$ is invariant under the action of $\pi$. Then, by the above, 
 the order of $P$ is at least $\binom{\abs{J}}{T}$. We need to choose a suitable $r$ and optimize 
 for the parameters $\epsilon, \eta$ so that
 \begin{equation}
@@ -648,7 +648,7 @@ It suffices to take $r \in O(\log p)$ and appropriate $\epsilon, \eta$ to obtain
 		\STATE\label{step:ss-psi}
 		Compute $x^{p^2}, f_p, f_{p - 1}, f_{p + 1} \bmod \Phi_r(x)$ using Algorithm 
 		\ref{alg:divpoly-comp}
-		\IF {(\ref{equ:ss-strong}) holds}
+		\IF {\eqref{equ:ss-strong} holds}
 			\STATE return true
 		\ELSE
 			\STATE return false
