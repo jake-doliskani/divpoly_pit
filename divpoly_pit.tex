@@ -708,12 +708,10 @@ The following proposition proves Theorem \ref{theo:main}.
 \section{Experiments}
 
 We have implemented Algorithm \ref{alg:ss-strong} of this paper and Algorithm 2 of 
-\cite{sutherland2012} both in C++\footnote{The source is available at 
-\url{https://github.com/javad-doliskani/divpoly_pit}}. The arithmetic in $\F_{p^2}[x]$ is done 
-using the NTL library \cite{shoup2001ntl}. The timings are obtained on a single core of an AMD 
-FX(tm)-8120 at 1.4GHz on a Linux machine. Table \ref{table:exper} compares the runtimes for 
-different sizes of the base field $\F_p$. The first row is the size of a randomly selected prime 
-$p$ in bits. 
+\cite{sutherland2012} both in C++. The arithmetic in $\F_{p^2}[x]$ is done using the NTL library 
+\cite{shoup2001ntl}. The timings are obtained on a single core of an AMD FX(tm)-8120 at 1.4GHz on a 
+Linux machine. Table \ref{table:exper} compares the runtimes for different sizes of the base field 
+$\F_p$. The first row is the size of a randomly selected prime $p$ in bits. 
 
 For each prime, we have generated 10 random ordinary and 10 random supersingular curves using Sage 
 \cite{stein2008sage}. Since most of the elliptic curves $E/\F_q$ are ordinary, generating random 
