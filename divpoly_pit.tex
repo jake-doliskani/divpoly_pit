@@ -169,7 +169,7 @@ then $E$ is supersingular with probability at least $(p - 1) / p$ \cite[Prop. 2]
 which is very close to 1 when $p$ is large. The cost of this test is $\tildO(\log p)$ operations in 
 $\F_p$ or $\tildO(\log^2 p)$ bit operations.
 
-The best known algorithm, up to the author's knowledge, is due to \cite{sutherland2012}. The 
+The best known deterministic algorithm, up to the author's knowledge, is due to \cite{sutherland2012}. The 
 algorithm is based on traversing the isogeny graph of $E$, and it runs in $O(\log^3p \loglog^3p)$ 
 bit operations. In fact, the algorithm exploits an interesting structural difference between 
 isogeny graphs of ordinary and supersingular curves. For more details on the algorithm and on 
@@ -184,7 +184,7 @@ $E$. Our main result can be summarized as follows:
 \end{theorem}
 
 \paragraph{Polynomial identity testing (PIT)}
-Given a field $K$, an arithmetic circuit with $n$ variables over $K$ is a directed tree with the 
+Given a field $K$, an arithmetic circuit with $n$ variables over $K$ is a directed acyclic graph with the 
 leaves considered as input variables and the root as output. The operations on the input, which are 
 implemented by the internal nodes (gates), consist of only addition and multiplication in $K$. 
 Here, the edges act as wires. Therefore, a circuit implements a polynomial function in $K[x_1, 
@@ -231,7 +231,7 @@ can be defined using recursive relations as follows. Given $E: y^2 = x^3 + ax + 
 		\psi_0 & = & 0 \\
 		\psi_1 & = & 1 \\
 		\psi_2 & = & 2y \\
-		\psi_3 & = & 3x^4 + 6ax^2 + 12bx - A^2 \\
+		\psi_3 & = & 3x^4 + 6ax^2 + 12bx - a^2 \\
 		\psi_4 & = & 4y(x^6 + 5ax^4 + 20bx^3 - 5a^2x^2 - 4abx - 8b^2 - a^3) \\
 		\psi_{2m + 1} & = & \psi_{m + 2}\psi_m^3 - \psi_{m - 1}\psi_{m + 1}^3 \quad \text{for } m 
 		\ge 2 \\
@@ -381,7 +381,7 @@ For supersingular elliptic curves we have
 	Frobenius factorizes as $(X \pm p)^2$. Therefore, $\pi(x, y) = \pm [p](x, y)$. Comparing the 
 	first coordinates and considering the multiplication-by-$p$ formula \eqref{equ:mult-p} gives 
 	$x^{p^2} = \phi_p(x) / \psi_p(x)^2$. Since $\phi_p(x) = x^{p^2} + \cdots$	
-	\cite{washington2008}, it follows that $\psi_p(x) = \pm 1$.
+	(see~\cite{washington2008}), it follows that $\psi_p(x) = \pm 1$.
 \end{proof}
 It is not hard to distinguish the cases $\psi_p = 1$ and $\psi_p = -1$ in Lemma 
 \ref{lem:ss_divpoly}, but we are not concerned with that. In fact, it is easily done in practice 
@@ -485,7 +485,7 @@ The above result enables us to check the PIT \eqref{equ:ss-strong} using a high 
 follows. Let $P \in E$ be a point of order $r > 2p + 2$. If $P$ satisfies \eqref{equ:ss-strong} 
 then $\tilde{\psi}_p(kP)^p = \psi_p(kP) = 1$ hence $\tilde{\psi}_p(kP) = 1$ for at least $p + 1$ 
 values of $k$. This means $\tilde{\psi}_p(x_{kP}) = 1$ for at least $(p + 1) / 2$ distinct 
-abscissas of the points $kP$. But the univariate polynomial $\tilde{\psi}_p$ has degree $(p - 1) / 
+abscissas of the points $kP$. But the univariate polynomial $\tilde{\psi}_p$ has degree at most $(p - 1) / 
 2$ so it is uniquely determined by $(p + 1) / 2$ pairs $(a, \tilde{\psi}_p(a))$. It follows that 
 $\tilde{\psi}_p^p = 1$, and hence $\psi_p = 1$. It only remains to efficiently find a point of high 
 order on $E$. For this, we adapt the approach of Voloch \cite{voloch2007,voloch2010}.
