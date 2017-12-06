@@ -25,9 +25,9 @@
 	unicode = true,
 	colorlinks = true,
 	citecolor = blue,
-	filecolor = black,
-	linkcolor = black,
-	urlcolor = black,
+	filecolor = blue,
+	linkcolor = blue,
+	urlcolor = blue,
 	pdfstartview = {FitH},
 }
 
@@ -611,22 +611,25 @@ A closer look at the proof of \cite[Theorem 1.1]{voloch2010} shows that the poin
 least $\binom{\abs{J}}{T}$ where $\abs{J} \gg d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}$ and $T = 
 [d^\eta]$ for some $\eta > 0$. The bound $\exp(d^\delta)$ is just an approximation of the binomial 
 coefficient. In practice, we could ignore this approximation and use the value of the binomial 
-coefficient directly. 
+coefficient directly. Here, $\eta$ is a function of $\epsilon$ and can be calculated from the 
+inequality $\deg_L(\sum_{j \in I}y_{n_j} - \sum_{j \in I'}y_{n_j}) \ll TDN $ of Theorem 
+\ref{theo:order-general}. From this we can obtain the rough estimate $T \approx d^{2\epsilon} / 3$, 
+which gives $\eta \approx 2\epsilon$. 
 
-Explicit parameters can be computed as follows. Let $r > 0$ be a prime such that $q$ is a generator 
-of $(\Z/r\Z)^*$. Then $q$ has order $d = r - 1$, and $d^{2 - \epsilon} > r$ for a wide range of 
-values of $0 < \epsilon < 1$. Now the $r$-th cyclotomic polynomial $\Phi_r(T)$ is irreducible over 
-$\F_q$ and so $K = \F_q[T]/\Phi_r(T)$ is a field. Let $t$ be the image of $T$ in $K$. A point $P 
-\in E$ with first coordinate $t$ lies in $E(F)$ where $[F : K] \le 2$. If $P$ satisfies 
-\eqref{equ:ss-strong} then $\ang{P}$ is invariant under the action of $\pi$. Then, by the above, 
-the order of $P$ is at least $\binom{\abs{J}}{T}$. We need to choose a suitable $r$ and optimize 
-for the parameters $\epsilon, \eta$ so that
+Let $r$ be a prime such that $p$ is a generator of $(\Z/r\Z)^*$. Then $q = p^2$ has order $d = 
+(r - 1) / 2$, and $d^{2 - \epsilon} > r$ for a wide range of values of $0 < \epsilon < 1$. Now the 
+$r$-th cyclotomic polynomial $\Phi_r(T)$ splits into two irreducible factors of degree $d$ over 
+$\F_q$. Let $g(T)$ be one of the factors so that $K = \F_q[T]/g(T)$ is a field, and let $t$ be the 
+image of $T$ in $K$. A point $P \in E$ with first coordinate $t$ lies in $E(F)$ where $[F : K] \le 
+2$. If $P$ satisfies \eqref{equ:ss-strong} then $\ang{P}$ is invariant under the action of $\pi$. 
+Then, by the above, the order of $P$ is at least $\binom{\abs{J}}{T}$. We need to choose a suitable 
+$r$ and optimize for $\epsilon$ so that
 \begin{equation}
 	\label{equ:binom}
-	\binom{\abs{J}}{T} \gg \binom{d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}}{d^\eta} \approx 
-	\binom{r^{1 - \epsilon / 3} - r^{\epsilon / 3}}{r^\eta} \ge 2p + 2.
+	\binom{\abs{J}}{T} \gg \binom{d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}}{d^{2\epsilon}} 
+	\approx \binom{r^{1 - \epsilon / 3} - r^{\epsilon / 3}}{(r / 2)^{2\epsilon}} \ge 2p + 2.
 \end{equation}
-It suffices to take $r \in O(\log p)$ and appropriate $\epsilon, \eta$ to obtain the bound in 
+It suffices to take $r \in O(\log p)$ and an appropriate $\epsilon$ to obtain the bound in 
 \eqref{equ:binom}. Then $P$ will have order large enough to imply that $\psi_p = 1$. 
 
 \begin{algorithm}[H]
@@ -641,12 +644,13 @@ It suffices to take $r \in O(\log p)$ and appropriate $\epsilon, \eta$ to obtain
 			\STATE return false
 		\ENDIF
 		\STATE\label{step:ss-find-par}
-		Find $r \in O(\log p)$ such that $q$ generates $(\Z/r\Z)^*$ and such that \eqref{equ:binom} 
+		Find $r \in O(\log p)$ such that $p$ generates $(\Z/r\Z)^*$ and such that \eqref{equ:binom} 
 		holds
 		\STATE\label{step:cyclo}
-		Obtain the $r$-th cyclotomic polynomial $\Phi_r(x)$
+		Obtain an irreducible factor $g(x)$ of the $r$-th cyclotomic polynomial $\Phi_r(x)$ over 
+		$\F_q$
 		\STATE\label{step:ss-psi}
-		Compute $x^{p^2}, f_p, f_{p - 1}, f_{p + 1} \bmod \Phi_r(x)$ using Algorithm 
+		Compute $x^{p^2}, f_p, f_{p - 1}, f_{p + 1} \bmod g(x)$ using Algorithm 
 		\ref{alg:divpoly-comp}
 		\IF {\eqref{equ:ss-strong} holds}
 			\STATE return true
@@ -655,7 +659,20 @@ It suffices to take $r \in O(\log p)$ and appropriate $\epsilon, \eta$ to obtain
 		\ENDIF
 	\end{algorithmic}
 \end{algorithm}
-The following proposition proves Theorem \ref{theo:main}.
+
+To analyze Algorithm \ref{alg:ss-strong} we need the following theorem \cite{hooley1967artin, 
+matthews1976generalisation, finch2003mathematical}.
+\begin{theorem}
+	\label{theo:Artin}
+	Let $S(p, x)$ be the number of primes $r \le x$ such that $p \bmod r$ is a generator of 
+	$(\Z/r\Z)^*$. Assuming the generalized Riemann hypothesis, we have 
+	\[ S(p, x) = C(p)\frac{x}{\log(x)}\]
+	where $C(p)$ is a constant depending on $p$.
+\end{theorem}
+The constant $C(p)$ in Theorem \ref{theo:Artin} can be explicitly written as $C(p) = (1 + 1 / (p^2 
+- p - 1))C_{\text{Artin}}$ where $C_{\text{Artin}} = 0.3739558136\dots$ is called the Artin's 
+constant. The theorem simply state that the density of primes for which a given prime is a 
+primitive root is roughly $C(p)$.
 \begin{proposition}
 	\label{prop:ss-strong}
 	Algorithm \ref{alg:ss-strong} is correct and for a randomly selected curve $E/\F_q$ has 
@@ -666,15 +683,14 @@ The following proposition proves Theorem \ref{theo:main}.
 	Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$ using Algorithm 
 	\ref{alg:divpoly-comp}. Since most curves $E/\F_q$ are ordinary and they almost always fail to 
 	satisfy the condition $\psi(a) \ne \pm 1$, this will be the average-case complexity of the 
-	algorithm. The integer $r$ in Step \ref{step:ss-find-par} can be computed in negligible time. 
-	In fact, for a random prime $r$, the probability that $q$ is a generator of $(\Z/r\Z)^*$ is
-	$\varphi(r - 1) / (r - 1)$ where $\varphi$ is the Euler totient function.
+	algorithm. According to Theorem \ref{theo:Artin}, the integer $r$ in Step  
+	\ref{step:ss-find-par} always exists and it can be computed in negligible time. 
 	
-	Step \ref{step:cyclo} is automatic since the $r$-th cyclotomic polynomial is just $\Phi_r(x) = 
-	x^{r - 1} + \cdots + x + 1$. Step \ref{step:ss-psi} is performed at the cost of $\tildO(\log^2 
-	p)$ operations in $\F_p$ using Algorithm \ref{alg:divpoly-comp}. Therefore, the worst-case 
-	complexity of Algorithm \ref{alg:ss-strong} is $\tildO(\log^2 p)$ operations in 
-	$\F_p$.
+	The cyclotomic polynomial $\Phi_r(x)$ in Step \ref{step:cyclo} can be factored using 
+	$\tildO(\log^2p)$ operations in $\F_p$ \cite{shoup1994}. Step \ref{step:ss-psi} is performed at 
+	the cost of $\tildO(\log^2p)$ operations in $\F_p$ using Algorithm \ref{alg:divpoly-comp}. 
+	Therefore, the worst-case complexity of Algorithm \ref{alg:ss-strong} is $\tildO(\log^2 p)$ 
+	operations in $\F_p$.
 \end{proof}
 
 \begin{remark}
