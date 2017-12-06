@@ -141,33 +141,43 @@ definitions of supersingularity is based on the $p$-torsion subgroup $E[p]$ of $
 (equivalently $E[p^n] = 0$) then $E$ is supersingular. See \cite{Husemoeller1987} for an 
 introduction on elliptic curves and other definitions for supersingulariy. 
 
-It can be shown that the $j$-invariants of all supersingular elliptic curves $E / \overline{\F_p}$ 
+It can be shown that the $j$-invariants of all supersingular elliptic curves $E / \overline{\F}_p$ 
 reside in the quadratic extension $\F_{p^2}$. Since isomorphism classes of elliptic curves are 
 uniquely determined by their $j$-invariant, it follows that every supersigular elliptic curve can 
-be defined over $\F_{p^2}$. So for the rest of this paper we assume $\F_q = \F_{p^2}$. 
+be defined over $\F_{p^2}$. So for the rest of this paper we assume $\F_q = \F_{p^2}$. We also 
+assume that $p > 3$.
+
+Denote by $\MM(n)$ the cost of multiplying two polynomials of degree $n$ over $\F_q$ where the unit 
+cost is operations in $\F_q$. We can take $\MM(n) = O(n\log n \loglog n)$ \cite{vzGG}. We also 
+assume that two $n$-bit integers can be multiplied using $O(n\log n \loglog n)$ bit operations 
+\cite{vzGG}. Since $\F_q / \F_p$ is only a quadratic extension, multiplication in $\F_q$ is 
+performed using a few multiplications in $\F_p$. Therefore, polynomial multiplication over $\F_q$ 
+has the same asymptotic cost as that over $\F_p$, and we shall always count the number of 
+operations in $\F_p$.
 
 Given $E / \F_q$, an obvious algorithm to determine whether $E$ is ordinary or supersingular is to 
-do the exponentiation above and check the coefficient of $x^{p - 1}$. Denote by $\MM(n)$ the cost 
-of multiplying two polynomials of degree $n$ over $\F_q$ where the unit cost is operations in 
-$\F_q$. We can take $\MM(n) = O(n\log n \loglog n)$ \cite{vzGG}. We also assume that two $n$-bit 
-integers can be multiplied using $O(n\log n \loglog n)$ bit operations \cite{vzGG}. The 
-exponentiations algorithm then takes $O(\MM(p))$ operations in $\F_q$ which is exponential in $\log 
-p$. We wish to have algorithms with complexity at most polynomial in $\log p$.
+do the exponentiation above and check the coefficient of $x^{p - 1}$. The exponentiations algorithm 
+then takes $O(\MM(p))$ operations in $\F_q$. A slightly better complexity $O(p)$ can be obtained by 
+using the Deuring polynomial $H_p(x)$ \cite[Theorem 4.1.b]{silverman2009arithmetic}. These 
+algorithms are exponential in $\log p$, and we wish to have algorithms with complexity at most 
+polynomial in $\log p$.
 
 The Frobenius endomorphism $\pi$ of $E$ satisfies $\pi^2 - t\pi + p^2 = 0$ in the endomorphism ring 
 $\ringofend(E)$. The number $t$ is called the \textit{trace} of the Frobenius. One can show that 
 $E$ is supersingular if and only if $t \equiv 0 \pmod{p}$. An immediate algorithm that comes to 
 mind is then to compute $t$ by counting the number of points on $E$, and test the above congruence. 
-An efficient point counting algorithm is due to \cite{schoof85} which takes $\tildO(\log^5 p)$ bit 
-operations. The notation $\tildO$ means ignoring logarithmic factors in the main complexity 
-parameter.
+An efficient deterministic point counting algorithm is due to \cite{schoof85}, which takes 
+$\tildO(\log^5 p)$ bit operations. The notation $\tildO$ means ignoring logarithmic factors in the 
+main complexity parameter. A Las Vegas variant of Schoof's algorithm, called SEA, was proposed by 
+Elkies and Atkin. Under some heuristic assumption, the SEA algorithm runs in expected 
+$\tildO(\log^4p)$ bit operations.  
 
 If one is content with a high-probability output then a simple \textit{Monte Carlo} test can be 
-performed as follows. The curve $E$ is supersingular if and only if $\#E(\F_q) = (p \pm 1)^2$. 
-Therefore, we can pick a random point $P \in E(\F_q)$ and check whether $(p \pm 1)P = 0$. If so, 
-then $E$ is supersingular with probability at least $(p - 1) / p$ \cite[Prop. 2]{sutherland2012}, 
-which is very close to 1 when $p$ is large. The cost of this test is $\tildO(\log p)$ operations in 
-$\F_p$ or $\tildO(\log^2 p)$ bit operations.
+performed as follows. The curve $E$ is supersingular if and only if $E(\F_q) \cong (\Z/(p \pm 
+1)\Z)^2$. Therefore, we can pick a random point $P \in E(\F_q)$ and check whether $(p \pm 1)P = 0$. 
+If so, then $E$ is supersingular with probability at least $(p - 1) / p$ \cite[Prop. 
+2]{sutherland2012}, which is very close to 1 when $p$ is large. The cost of this test is 
+$\tildO(\log p)$ operations in $\F_p$ or $\tildO(\log^2 p)$ bit operations.
 
 The best known algorithm, up to the author's knowledge, is due to \cite{sutherland2012}. The 
 algorithm is based on traversing the isogeny graph of $E$, and it runs in $O(\log^3p \loglog^3p)$ 
@@ -178,9 +188,10 @@ an algorithm that can efficiently check the supersingularity of $E$ using points
 $E$. Our main result can be summarized as follows:
 \begin{theorem}
 	\label{theo:main}
-	Given an elliptic curve $E/\F_q$, there exists an algorithm that can efficiently decide whether 
-	$E$ is supersingular or ordinary. The algorithm has average-case complexity $\tildO(\log p)$ 
-	operations in $\F_p$, and worst-case complexity $\tildO(\log^2 p)$ operations in $\F_p$.
+	Given an elliptic curve $E/\F_q$, there exists a Las Vegas algorithm that can efficiently 
+	decide whether $E$ is supersingular or ordinary. The algorithm has average-case complexity 
+	$\tildO(\log p)$ operations in $\F_p$. Under the generalized Riemann hypothesis, the worst-case 
+	complexity of the algorithm is $\tildO(\log^2 p)$ operations in $\F_p$.
 \end{theorem}
 
 \paragraph{Polynomial identity testing (PIT)}
@@ -239,7 +250,7 @@ can be defined using recursive relations as follows. Given $E: y^2 = x^3 + ax + 
 		\quad \text{for } m \ge 3.
 	\end{array}
 \end{equation}
-It follows from the definition that a point $P \in E(\overline{\F_p})$ is an $n$-torsion if and 
+It follows from the definition that a point $P \in E(\overline{\F}_p)$ is an $n$-torsion if and 
 only if $\psi_n(P) = 0$. In other words, the division polynomial $\psi_n$ exactly encodes the whole 
 $n$-torsion $E[n]$. Division polynomials play an important role in the theory of elliptic 
 curves. They are also heavily used in implementations of the point counting algorithm of 
@@ -363,9 +374,10 @@ polynomial, $\deg \psi_p < (p^2 - 1) / 2$. In fact, for ordinary curves we have
 		\frac{\omega_p}{\psi_p^3} \right).
 	\end{equation}
 	The last equality is the formula for multiplication by $p$, which is defined by division 
-	polynomials. It follows that $\psi_p$ is a $p$-th power. Since $\psi_p$ has roots exactly the 
-	abscissas of the nonzero $p$-torsion points it must have degree $p(p - 1) / 2$, which proves 
-	the first part.
+	polynomials $\phi_n = x\psi_n^2 - \psi_{n + 1}\psi_{n - 1}$ and $\omega_n = (4y)^{-1}(\psi_{n + 
+	2}\psi_{n - 1}^2 - \psi_{n - 2}\psi_{n + 1}^2)$. It follows that $\psi_p$ is a $p$-th power. 
+	Since $\psi_p$ has roots exactly the abscissas of the nonzero $p$-torsion points it must have 
+	degree $p(p - 1) / 2$, which proves the first part.
 	
 	For the second part, note that the action of the Frobenius on $E[p]$ is just multiplication by 
 	the trace $t$. By the first part $\psi_p = \tilde{\psi}_p^p$ where $\tilde{\psi}_p$ splits into 
@@ -374,7 +386,7 @@ polynomial, $\deg \psi_p < (p^2 - 1) / 2$. In fact, for ordinary curves we have
 For supersingular elliptic curves we have
 \begin{lemma}
 	\label{lem:ss_divpoly}
-	Let $E/\F_q$ be a supersingular elliptic curve. Then $\psi_p = \pm 1$.
+	Let $E/\F_q$ be a supersingular elliptic curve with $j(E) \ne 0, 1728$. Then $\psi_p = \pm 1$.
 \end{lemma}
 \begin{proof}
 	When $E$ is supersingular we have $t = \pm 2p$ so that the characteristic polynomial of the 
@@ -392,8 +404,8 @@ efficient algorithm based on points of high order is discussed in Section \ref{s
 \paragraph{A probabilistic algorithm.}
 Lemmas \ref{lem:ord_divpoly}, \ref{lem:ss_divpoly} and Lemma \ref{lemma:Schwartz-Zippel} give a 
 probabilistic algorithm for the PIT $\psi_p(x) = 1$: select a random element $a \in S = \F_q$ and 
-compute $\psi_p(a)$. If $\psi_p(a) = 1$ then $E$ is supersingular, and it is ordinary otherwise. If 
-$E$ is ordinary, then the output is supersingular with probability 
+compute $\psi_p(a)$. If $\psi_p(a) = 1$ then the algorithm outputs ``supersingular'', otherwise it 
+outputs ``ordinary''. If $E$ is ordinary, then the output is supersingular with probability 
 \[ P[\psi_p(a) = 1] = P[\tilde{\psi}_p(a) = 1] \le (p - 1) / 2p^2 < 1 / 2p, \] 
 where $\psi_p = \tilde{\psi}_p^p$ as in Lemma \ref{lem:ord_divpoly}. The runtime of this algorithm 
 is $\tildO(\log p)$ operations in $\F_p$, which is the same as the Monte Carlo algorithm given in 
@@ -573,7 +585,7 @@ The logarithmic term $\log d$ in the exponent in Theorem \ref{theo:order-general
 exponent $2T$ in the bound $TD^{2T}N$ obtained in the proof. If $X$ is taken to be an open subset 
 of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$ then better bounds can be obtained. In 
 fact, for our purposes it is enough to take $f$ as the projection to the first coordinate, i.e., 
-$f(P) = x_P$. A point $(x_P, P)$ is in $X_n$ if $(x_P^n, P)$ is in $X$. Therefore, it is implied by 
+$f(P) = x_P$. A point $(P, x_P)$ is in $X_n$ if $(P, x_P^n)$ is in $X$. Therefore, it is implied by 
 the commutative digram
 
 \begin{center}
@@ -627,7 +639,8 @@ $r$ and optimize for $\epsilon$ so that
 \begin{equation}
 	\label{equ:binom}
 	\binom{\abs{J}}{T} \gg \binom{d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}}{d^{2\epsilon}} 
-	\approx \binom{r^{1 - \epsilon / 3} - r^{\epsilon / 3}}{(r / 2)^{2\epsilon}} \ge 2p + 2.
+	\approx \binom{r^{1 - \epsilon / 3} - r^{\epsilon / 3}}{\lfloor r / 2 \rfloor^{2\epsilon}} \ge 
+	2p + 2.
 \end{equation}
 It suffices to take $r \in O(\log p)$ and an appropriate $\epsilon$ to obtain the bound in 
 \eqref{equ:binom}. Then $P$ will have order large enough to imply that $\psi_p = 1$. 
@@ -638,6 +651,12 @@ It suffices to take $r \in O(\log p)$ and an appropriate $\epsilon$ to obtain th
 	\begin{algorithmic}[1]
 		\REQUIRE An elliptic curve $E$ over $\F_q$
 		\ENSURE True if $E$ is supersingular, and false otherwise
+		\IF {$j(E) = 0$}
+			\STATE If $p = 2 \bmod 3$ then return true, otherwise return false
+		\ENDIF
+		\IF {$j(E) = 1728$}
+			\STATE If $p = 3 \bmod 4$ then return true, otherwise return false
+		\ENDIF
 		\STATE\label{step:ss-eval}
 		Compute $\psi_p(a)$ for a random $a \in \F_q$.
 		\IF {$\psi(a) \ne \pm 1$}
@@ -672,12 +691,13 @@ matthews1976generalisation, finch2003mathematical}.
 The constant $C(p)$ in Theorem \ref{theo:Artin} can be explicitly written as $C(p) = (1 + 1 / (p^2 
 - p - 1))C_{\text{Artin}}$ where $C_{\text{Artin}} = 0.3739558136\dots$ is called the Artin's 
 constant. The theorem simply state that the density of primes for which a given prime is a 
-primitive root is roughly $C(p)$.
+primitive root is roughly $C(p)$. Theorem \ref{theo:main} follows from the following proposition.
 \begin{proposition}
 	\label{prop:ss-strong}
 	Algorithm \ref{alg:ss-strong} is correct and for a randomly selected curve $E/\F_q$ has 
-	average-case complexity $\tildO(\log p)$ operations in $\F_p$. The worst-case complexity of the 
-	algorithm is $\tildO(\log^2 p)$ operations in $\F_p$.
+	average-case complexity $\tildO(\log p)$ operations in $\F_p$. Assuming the generalized Riemann 
+	hypothesis, the worst-case complexity of the algorithm is $\tildO(\log^2 p)$ operations in 
+	$\F_p$.
 \end{proposition}
 \begin{proof}
 	Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$ using Algorithm 
@@ -700,8 +720,8 @@ primitive root is roughly $C(p)$.
 		\label{conj:poonen}
 		Let $X/\F_q$ be a semiabelian variety and let $Y \subset X$ be a closed subvariety. Let $Z$ 
 		be the union of all translates of positive-dimensional semiabelian varieties $X' / 
-		\overline{\F_q}$ contained in $X$. Then there is a constant $c > 0$ such that for every 
-		nonzero $x \in (X - Z)(\overline{\F_q})$, $x$ has order at least $(\#\F_q(x))^c$.
+		\overline{\F}_q$ contained in $X$. Then there is a constant $c > 0$ such that for every 
+		nonzero $x \in (X - Z)(\overline{\F}_q)$, $x$ has order at least $(\#\F_q(x))^c$.
 	\end{conjecture}
 	Chang et al.\cite{chang2014} have obtained strong results indirectly confirming the above 
 	conjecture for general varieties. In our context, this implies that if $P \in E(\F_q)$ does 
