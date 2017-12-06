@@ -17,7 +17,7 @@ public:
 private:
 
     bool solvePit(long r);
-    void cycloFactor(ZZ_pEX &factor, long r);
+    void getCycloFactor(ZZ_pEX &factor, long r);
 
     ZZ_pE a;
     ZZ_pE b;

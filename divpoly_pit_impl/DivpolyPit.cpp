@@ -3,7 +3,7 @@
 #include "DivisionPoly.h"
 #include "CycloMod.h"
 #include <iostream>
-#include <NTL/ZZ_pXFactoring.h>
+#include <NTL/ZZ_pEXFactoring.h>
 
 
 using namespace std;
@@ -34,11 +34,10 @@ bool DivpolyPit::isSupersingular(const ZZ_pE& a, const ZZ_pE& b) {
             break;
         }
 
-        r++;
+        r = NextPrime(r + 1);
     }
 
     return solvePit(r);
-
 }
 
 bool DivpolyPit::solvePit(long r) {
@@ -84,30 +83,36 @@ bool DivpolyPit::solvePit(long r) {
     cycloMod.mulMod(temp, polys[2], polys[4]);
     cycloMod.invMod(psi2, psi2);
     cycloMod.mulMod(temp, temp, psi2);
+    
+    ZZ_pEX cycloFactor;
+    getCycloFactor(cycloFactor, r);
+    rem(temp, temp, cycloFactor);
+    rem(xp2, xp2, cycloFactor);
+    
     if (temp != xp2)
         return false;
 
     return true;
 }
 
-void DivpolyPit::cycloFactor(ZZ_pEX& factor, long r) {
+void DivpolyPit::getCycloFactor(ZZ_pEX& factor, long r) {
     ZZ p2 = sqr(ZZ_p::modulus());
     long a = rem(p2, r);
     Util util;
     long d = util.findOrder(a, r);
    
-    ZZ_pX cycloPoly;
+    ZZ_pEX cycloPoly;
     for (long i = 0; i < r; i++)
         SetCoeff(cycloPoly, i, 1);
 
     // compute x^p mod cycloPoly
     long t = rem(ZZ_p::modulus(), r);
-    ZZ_pX temp;
+    ZZ_pEX temp;
     temp = 0;
     SetCoeff(temp, t, 1);
     rem(temp, temp, cycloPoly);
 
-    Vec<ZZ_pX> factors;
+    Vec<ZZ_pEX> factors;
     EDF(factors, cycloPoly, temp, d);
 
     conv(factor, factors[0]);
