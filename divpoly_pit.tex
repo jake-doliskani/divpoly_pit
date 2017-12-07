@@ -10,14 +10,15 @@
 \usepackage{url}
 \usepackage{color}
 \usepackage{hyperref}
-\usepackage{algorithmic}
-\usepackage{algorithm}
+\usepackage{algpseudocode}
+%\usepackage{algorithm}
 \usepackage{enumitem}
 \usepackage{makecell}
 \usepackage{booktabs}
 \usepackage{tikz}
 \usepackage{authblk}
 \usetikzlibrary{positioning, arrows}
+\usetikzlibrary{arrows.meta}
 
 
 
@@ -44,9 +45,8 @@
 \newtheorem*{remark}{Remark}
 \newtheorem{note}[theorem]{Note}
 
-\renewcommand{\algorithmicrequire}{\textbf{Input:}}
-\renewcommand{\algorithmicensure}{\textbf{Output:}}
-\algsetup{linenodelimiter=.}
+\algrenewcommand{\Require}{\item[\textbf{Input:}]}
+\algrenewcommand{\Ensure}{\item[\textbf{Output:}]}
 
 \newcommand{\wrt}{\vdash} 
 \newcommand{\ang}[1]{\langle#1\rangle}
@@ -88,6 +88,33 @@
 \def\CC{\ensuremath{\mathsf{C}}}
 \def\euler{\ensuremath{\varphi}}
 
+
+% allow algorithms to split over multiple pages
+\makeatletter
+\newcounter{algorithm}
+\setcounter{algorithm}{0}
+\renewcommand{\thealgorithm}{\arabic{algorithm}}
+\def\algorithm{\@ifnextchar[{\@algorithma}{\@algorithmb}}
+\def\@algorithma[#1]{%
+	\refstepcounter{algorithm}
+	\trivlist
+	\leftmargin\z@
+	\itemindent\z@
+	\labelsep\z@
+	\item[\parbox{\columnwidth}{%
+		\hrule
+		\hrule
+		\noindent\strut\textbf{Algorithm \thealgorithm} #1
+		\hrule
+	}]\hfil\vskip0em%
+}
+\def\@algorithmb{\@algorithma[]}
+\def\endalgorithm{\hfil\vskip-1em\hrule\endtrivlist}
+\makeatother
+
+
+
+
 \title{On Division Polynomial PIT and Supersingularity}
 
 \author[1]{Javad Doliskani}
@@ -96,6 +123,7 @@
 \date{}
 
 \setlength{\parindent}{0pt}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -308,24 +336,23 @@ From the indices involved in the above relations it is immediate that given $f_{
 We shall only need modular computation of division polynomials in this paper. Therefore, Algorithm 
 \ref{alg:divpoly-comp} performs computations mod $f$ for a given polynomial $f \in \F_q[x]$.
 
-\begin{algorithm}[H]
-	\caption{Division polynomial computation}
+\begin{algorithm}[Division polynomial computation]
 	\label{alg:divpoly-comp}
 	\begin{algorithmic}[1]
-		\REQUIRE Integer $m \ge 1$, and polynomial $f(x) \in \F_q[x]$ of degree $n$
-		\ENSURE The division polynomials $f_{m - 3}, \dots, f_{m + 5} \pmod{f}$
-		\STATE Let $b_kb_{k - 1} \cdots b_0$ be the binary representation of $m$
-		\STATE Set $r, s$ as follows \\
+		\Require Integer $m \ge 1$, and polynomial $f(x) \in \F_q[x]$ of degree $n$
+		\Ensure The division polynomials $f_{m - 3}, \dots, f_{m + 5} \pmod{f}$
+		\State Let $b_kb_{k - 1} \cdots b_0$ be the binary representation of $m$
+		\State Set $r, s$ as follows \\
 		$r = 3, s = 2$~ if~ $b_kb_{k - 1} = 11$ \\
 		$r = 4, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 100$ \\
 		$r = 5, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 101$
-		\STATE Set $j = r$, and compute $f_{j - 3}, \dots, f_{j + 5} \pmod{f}$
-		\STATE\label{step:divpoly-loop} 
-		For $i = s$ down to $0$ \\
-		Compute $f_{2j + b_i - 3}, \dots, f_{2j + b_i + 5} \pmod{f}$ from $f_{j - 3}, \dots, f_{j + 
-		5}$ using relations \eqref{equ:divpoly3} \\
-		$j \leftarrow 2j + b_i$
-		\RETURN $f_{m - 3}, \dots, f_{m + 5}$
+		\State Set $j = r$, and compute $f_{j - 3}, \dots, f_{j + 5} \pmod{f}$
+		\For {$i = s$ down to $0$}\label{step:divpoly-loop} 
+			\State Compute $f_{2j + b_i - 3}, \dots, f_{2j + b_i + 5} \pmod{f}$ from $f_{j - 3}, 
+			\dots, f_{j + 5}$ using relations \eqref{equ:divpoly3}
+			\State $j \leftarrow 2j + b_i$
+		\EndFor
+		\State \Return $f_{m - 3}, \dots, f_{m + 5}$
 	\end{algorithmic}
 \end{algorithm}
 
@@ -513,7 +540,8 @@ has non-constant projections to both factors and denote by $D$ the degree of $X 
 Consider the pullback diagram
 
 \begin{center}
-	\begin{tikzpicture}[node distance = 1.3cm, >=stealth]
+	\begin{tikzpicture}[node distance = 1.3cm, 
+		>={Computer Modern Rightarrow[length = 5, width = 4]}]
 		\node (Xn) {$X_n$};
 		\node[right = of Xn, inner sep = 5pt] (X) {$X$};
 		\node[below = of Xn] (Gm1) {$\P^1$};
@@ -534,6 +562,7 @@ $X_n \rightarrow E$ obtained by composing the top two morphisms determines an el
 function field $K_n = K(X_n)$. Assume that all such $y_n$ are elements of some fixed algebraic 
 closure of $K(X)$. Then Lemma 2.2 in \cite{voloch2010} becomes
 \begin{lemma}
+	\label{lem:linear-ind}
 	The functions $y_n$, considered as morphisms $X_n \rightarrow E$ with $(n, Dp) = 1$, are 
 	$\Z$-linearly independent.
 \end{lemma}
@@ -557,9 +586,17 @@ closure of $K(X)$. Then Lemma 2.2 in \cite{voloch2010} becomes
 	$\omega_{n_i}$ reside in different extensions inside $\Omega_{C_L}$ so they must be 
 	$\Z$-linearly independent.
 \end{proof}
+We need Lemma 2 from \cite{voloch2007} which we state here for convenience.
+\begin{lemma}
+	\label{lem:coset}
+	Let $m, q \ge 2$ be fixed integers and $\epsilon > 0$ a real number. For an integer $r \ge 2$ 
+	with $(r, mq) = 1$, if $d$ is the order of $q \bmod r$, then, given $N < d$, there is a coset 
+	$\Gamma$ of $\ang{q} \subset (\Z / r)^*$ with
+	\[ \# \{ n \mid 1 \le n \le N, (n, m) = 1, n \bmod r \in \Gamma \} \gg Nd^{1 - \epsilon} / r - 
+	r^\epsilon. \]
+\end{lemma}
 Following the notation of \cite{voloch2010}, for a function field $L/\F_q$ we define $\deg_Lz$ to 
-be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$. The following 
-theorem replaces Theorem 1.1 in \cite{voloch2010}.
+be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$.
 \begin{theorem}
 	\label{theo:order-general}
 	Let $X \subset E \times \mathbb{G}_m$ be an absolutely irreducible curve over $\F_q$ with 
@@ -567,51 +604,74 @@ theorem replaces Theorem 1.1 in \cite{voloch2010}.
 	that if $(P, b) \in X$ satisfies
 	\begin{enumerate}[leftmargin = *, labelsep = *, align = left, itemsep = -0.1cm, font = 
 	\normalfont, label = (\roman*)]
-		\item $d = [\F_q(P) : \F_q]$ sufficiently large,
+		\item $d = [\F_q(b) : \F_q]$ sufficiently large,
 		\item $\ang{P}$ invariant under the action of $\pi$,
 		\item the order $r$ of $b$ satisfies $r < d^{2 - \epsilon}$
 	\end{enumerate}
 	then $P$ has order at least $\exp(\delta (\log d)^2)$.
 \end{theorem}
 \begin{proof}
-	Essentially the same as \cite[Theorem 1.1]{voloch2010} except that now $z = \sum_{j \in 
-	I}y_{n_j} - \sum_{j \in I'}y_{n_j}$ where the addition occurs on $E$ instead of $z = \prod_{j 
-	\in I}y_{n_j} / \prod_{j \in I'}y_{n_j} - 1$ where the multiplication occurs on $\mathbb{G}_m$. 
-	Also we have the bound
+	A slight modification of the proof of \cite[Theorem 1.1]{voloch2010} works here. Let $N = [d^{1 
+	- \epsilon}]$. Then using the parameters in the conditions of the theorem we get a coset 
+	$\Gamma = \gamma \ang{q}$ from Lemma \ref{lem:coset}. Let $c \in \overline{\F}_q$ be an $r$-th 
+	root of unity such that $c^\gamma = b$. For an integer $n \le N$ with $(n , q) = 1$ and $n 
+	\bmod r \in \Gamma$ we have, by construction, $n \equiv \gamma q^j \bmod r$ for some $j$. Let 
+	$J$ be the set of $j$'s obtained for all such $n$. For simplicity, denote also by $\pi$ the 
+	$\F_q$-Frobenius map on $E \times \mathbb{G}_m$. Then for $j \in J$ we have
+	\[ \pi^j(P, b) = (\pi^j(P), \pi^j(b)) = (\pi^j(P), b^{q^j}) = (\pi^j(P), c^{n_j}) \]
+	where $n_j$ is corresponds to $j$, that is $n_j \le N$, $(n_j, q) = 1$, $n_j \bmod r \in 
+	\Gamma$ and $n \equiv \gamma q^j \bmod r$. This means that there is a place of $K_{n_j}$ above 
+	$c$ where $y_{n_j}$ takes the value $\pi^j(P)$. 
+	
+	For a subset $I \subset J$ define $P_I = \sum_{j \in I}\pi^j(P)$. Note that $P_I$ is in 
+	$\ang{P}$ since $\pi$ takes $\ang{P}$ to itself. Let $T = [\eta \log d]$ for some real 
+	parameter $\eta > 0$. We show that for distinct $I \subset J$ with $\abs{I} \le T$ the points 
+	$P_I$ are distinct. Assume $P_I = P_{I'}$ for $I \ne I'$. Define  
+	\[ z = \sum_{j \in I}y_{n_j} - \sum_{j \in I'}y_{n_j} \]
+	where the addition occurs on $E$. Let $L$ be the compositum of $\{ K_{n_j} \}_{j \in I \cup 
+	I'}$. Then $z$ vanishes at a place of $L$ above $c$. But we have
 	\[ \deg_L z \le \sum_{j \in I \cup I'} \deg_L y_j = \sum_{j \in I \cup I'} [L : K_{n_j}] 
-	\deg_{K_{n_j}} y_{n_j} \ll TD^{2T}N. \qedhere\] 
+	\deg_{K_{n_j}} y_{n_j} \ll TD^{2T}N \] 
+	which can be made smaller than $d = [\F_q(c) : \F_q]$ for some small $\eta$ and all 
+	sufficiently large $d$. This is not possible unless $z = 0$ which means that the $y_{n_j}$, $j 
+	\in I \cup I'$ are $\Z$-linearly dependent, which in turn contradicts Lemma 
+	\ref{lem:linear-ind}. Therefore, the number of distinct points $P_I$ is at least 
+	$\binom{\abs{J}}{T}$. Now the same calculation as in \cite{voloch2010} gives the desired result.
 \end{proof}
 The logarithmic term $\log d$ in the exponent in Theorem \ref{theo:order-general} is forced by the 
-exponent $2T$ in the bound $TD^{2T}N$ obtained in the proof. If $X$ is taken to be an open subset 
-of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$ then better bounds can be obtained. In 
-fact, for our purposes it is enough to take $f$ as the projection to the first coordinate, i.e., 
-$f(P) = x_P$. A point $(P, x_P)$ is in $X_n$ if $(P, x_P^n)$ is in $X$. Therefore, it is implied by 
-the commutative digram
-
-\begin{center}
-	\begin{tikzpicture}[>=stealth]
-		\node[inner sep = 5pt] (KXn) {$K_n$};
-		\node[right = 1.7cm of KXn, inner sep = 3pt] (KX) {$K(X)$};
-		\node[below = of Xn] (KGm1) {$K(\P^1)$};
-		\node[below = of KX] (KGm2) {$K(\P^1)$};
-		\node[right = of KX] (KE) {$K(E)$};
-		\draw[->] (KX) edge (KXn);
-		\draw[->] (KGm1) edge (KXn);
-		\draw[->] (KGm2) edge (KX);
-		\draw[->] (KGm2) edge node[above, midway] {\scriptsize $\mu_n^*$} (KGm1);
-		\draw[->] (KE) edge (KX);
-	\end{tikzpicture}
-\end{center}
-
-that $y_n = (x^n, y)$, and a much smaller bound $\deg_L z \ll TDN$ is obtained. The proof of 
-\cite[Theorem 1.1]{voloch2010} implies that $P$ has order at least $\exp(d^\delta)$ for some 
-$\delta > 0$. We therefore have
+exponent $2T$ in the bound $TD^{2T}N$ obtained in the proof. For special cases of the irreducible 
+curve $X$, e.g. an open subset of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$, we can 
+obtain much better bounds on the order of $P$.  
 \begin{theorem}
 	\label{theo:order-ell}
 	Let $E/\F_q$ be an elliptic curve and let $f: E \rightarrow \mathbb{P}^1$ be the projection to 
 	the first coordinate. Then with the assumptions of Theorem \ref{theo:order-general} and with 
 	$X$ as an open subset of the graph of $f$, the point $P$ has order at least $\exp(d^\delta)$.
 \end{theorem}
+\begin{proof}
+	Let $X$ be an open subset of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$ defined by 
+	projection to the first coordinate. That is $f(P) = x_P$ for a point $P$ on $E$. A point $(P, 
+	x_P)$ is in $X_n$ if $(P, x_P^n)$ is in $X$. Therefore, it is implied by the commutative digram
+	\begin{center}
+		\begin{tikzpicture}[>={Computer Modern Rightarrow[length = 5, width = 4]}]
+			\node[inner sep = 5pt] (KXn) {$K_n$};
+			\node[right = 1.7cm of KXn, inner sep = 3pt] (KX) {$K(X)$};
+			\node[below = of Xn] (KGm1) {$K(\P^1)$};
+			\node[below = of KX] (KGm2) {$K(\P^1)$};
+			\node[right = of KX] (KE) {$K(E)$};
+			\draw[->] (KX) edge (KXn);
+			\draw[->] (KGm1) edge (KXn);
+			\draw[->] (KGm2) edge (KX);
+			\draw[->] (KGm2) edge node[above, midway] {\scriptsize $\mu_n^*$} (KGm1);
+			\draw[->] (KE) edge (KX);
+		\end{tikzpicture}
+	\end{center}
+	that $y_n = (x^n, y)$. So, following the proof of Theorem \ref{theo:order-general}, a much 
+	smaller bound $\deg_L z \ll TDN$ is obtained. This means we can choose a larger value of $T$, 
+	say $T = [d^\eta]$ following the notation of \cite{voloch2010}. Now the calculation of Theorem 
+	\ref{theo:order-general} implies that $P$ has order at least $\exp(d^\delta)$ for some suitable
+	$\delta > 0$.
+\end{proof}
 One concludes from the above theorems and the ones in \cite{voloch2010} that given a point $P \in 
 E$ and a function $f$ on $E$, under some conditions, one of $P, f(P)$ has large order in its 
 respective group. Therefore, forcing $f(P)$ to be of small order in $\F_q^*$ yields $P$ of large 
@@ -645,37 +705,36 @@ $r$ and optimize for $\epsilon$ so that
 It suffices to take $r \in O(\log p)$ and an appropriate $\epsilon$ to obtain the bound in 
 \eqref{equ:binom}. Then $P$ will have order large enough to imply that $\psi_p = 1$. 
 
-\begin{algorithm}[H]
-	\caption{Testing supersingularity}
+\begin{algorithm}[Testing supersingularity]
 	\label{alg:ss-strong}
 	\begin{algorithmic}[1]
-		\REQUIRE An elliptic curve $E$ over $\F_q$
-		\ENSURE True if $E$ is supersingular, and false otherwise
-		\IF {$j(E) = 0$}
-			\STATE If $p = 2 \bmod 3$ then return true, otherwise return false
-		\ENDIF
-		\IF {$j(E) = 1728$}
-			\STATE If $p = 3 \bmod 4$ then return true, otherwise return false
-		\ENDIF
-		\STATE\label{step:ss-eval}
+		\Require An elliptic curve $E$ over $\F_q$
+		\Ensure True if $E$ is supersingular, and false otherwise
+		\If {$j(E) = 0$}
+			\State If $p = 2 \bmod 3$ then return true, otherwise return false
+		\EndIf
+		\If {$j(E) = 1728$}
+			\State If $p = 3 \bmod 4$ then return true, otherwise return false
+		\EndIf
+		\State\label{step:ss-eval}%
 		Compute $\psi_p(a)$ for a random $a \in \F_q$.
-		\IF {$\psi(a) \ne \pm 1$}
-			\STATE return false
-		\ENDIF
-		\STATE\label{step:ss-find-par}
+		\If {$\psi(a) \ne \pm 1$}
+			\State return false
+		\EndIf
+		\State\label{step:ss-find-par}%
 		Find $r \in O(\log p)$ such that $p$ generates $(\Z/r\Z)^*$ and such that \eqref{equ:binom} 
 		holds
-		\STATE\label{step:cyclo}
+		\State\label{step:cyclo}%
 		Obtain an irreducible factor $g(x)$ of the $r$-th cyclotomic polynomial $\Phi_r(x)$ over 
 		$\F_q$
-		\STATE\label{step:ss-psi}
+		\State\label{step:ss-psi}%
 		Compute $x^{p^2}, f_p, f_{p - 1}, f_{p + 1} \bmod g(x)$ using Algorithm 
 		\ref{alg:divpoly-comp}
-		\IF {\eqref{equ:ss-strong} holds}
-			\STATE return true
-		\ELSE
-			\STATE return false
-		\ENDIF
+		\If {\eqref{equ:ss-strong} holds}
+			\State return true
+		\Else
+			\State return false
+		\EndIf
 	\end{algorithmic}
 \end{algorithm}
 
@@ -757,7 +816,7 @@ method in \cite{broker2009}. As pointed out in \cite{sutherland2012}, one can st
 constructed by the method of \cite{broker2009} and take a random walk in the $2$-isogeny graph to 
 get a random supersingular curve.
 
-\begin{table}[H]
+\begin{table}
 	\centering
 	\small
 	\begin{tabular}{ccccc}
