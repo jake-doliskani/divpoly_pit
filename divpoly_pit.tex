@@ -393,8 +393,11 @@ polynomial, $\deg \psi_p < (p^2 - 1) / 2$. In fact, for ordinary curves we have
 	is the factorization of $\psi_p$ over $\F_q$ where all $f_i$ are of the same degree $r$.
 \end{lemma}
 \begin{proof}
-	We have $\pi \circ \hat{\pi} = [p]$ where $\hat{\pi}$ is the dual of $\pi$. Let $\hat{\pi}(x, 
-	y) = (F, G)$ where $F, G$ are rational functions in $x, y$. Then
+	We have $\pi \circ \hat{\pi} = [p]$ where $\hat{\pi}$ is the dual\footnote{The dual of an 
+	isogeny $\phi: E_1 \rightarrow E_2$ of degree $m$ is a unique isogeny $\hat{\phi}: E_2 
+	\rightarrow E_1$ such that $\phi \circ \hat{\phi} = [m]$, see  
+	\cite[III.6]{silverman2009arithmetic}.} of $\pi$. Let $\hat{\pi}(x, y) = (F, G)$ where $F, G$ 
+	are rational functions in $x, y$. Then
 	\begin{equation}
 	\label{equ:mult-p}
 		(F^p, G^p) = \pi(F, G) = [p](x, y) = \left( \frac{\phi_p}{\psi_p^2}, 		
@@ -524,10 +527,10 @@ The above result enables us to check the PIT \eqref{equ:ss-strong} using a high 
 follows. Let $P \in E$ be a point of order $r > 2p + 2$. If $P$ satisfies \eqref{equ:ss-strong} 
 then $\tilde{\psi}_p(kP)^p = \psi_p(kP) = 1$ hence $\tilde{\psi}_p(kP) = 1$ for at least $p + 1$ 
 values of $k$. This means $\tilde{\psi}_p(x_{kP}) = 1$ for at least $(p + 1) / 2$ distinct 
-abscissas of the points $kP$. But the univariate polynomial $\tilde{\psi}_p$ has degree at most $(p - 1) / 
-2$ so it is uniquely determined by $(p + 1) / 2$ pairs $(a, \tilde{\psi}_p(a))$. It follows that 
-$\tilde{\psi}_p^p = 1$, and hence $\psi_p = 1$. It only remains to efficiently find a point of high 
-order on $E$. For this, we adapt the approach of Voloch \cite{voloch2007,voloch2010}.
+abscissas of the points $kP$. But the univariate polynomial $\tilde{\psi}_p$ has degree at most $(p 
+- 1) / 2$ so it is uniquely determined by $(p + 1) / 2$ pairs $(a, \tilde{\psi}_p(a))$. It follows 
+that $\tilde{\psi}_p^p = 1$, and hence $\psi_p = 1$. It only remains to efficiently find a point of 
+high order on $E$. For this, we adapt the approach of Voloch \cite{voloch2007,voloch2010}.
 
 Let $\mathbb{G}_m$ be the multiplicative group over $\F_q$. In \cite{voloch2010}, elements of high 
 order in $\F_q^*$ are obtained using points on a curve contained in the fibered product $E \times 
@@ -624,7 +627,7 @@ be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$.
 	$c$ where $y_{n_j}$ takes the value $\pi^j(P)$. 
 	
 	For a subset $I \subset J$ define $P_I = \sum_{j \in I}\pi^j(P)$. Note that $P_I$ is in 
-	$\ang{P}$ since $\pi$ takes $\ang{P}$ to itself. Let $T = [\eta \log d]$ for some real 
+	$\ang{P}$ since $\ang{P}$ is invariant under $\pi$. Let $T = [\eta \log d]$ for some real 
 	parameter $\eta > 0$. We show that for distinct $I \subset J$ with $\abs{I} \le T$ the points 
 	$P_I$ are distinct. Assume $P_I = P_{I'}$ for $I \ne I'$. Define  
 	\[ z = \sum_{j \in I}y_{n_j} - \sum_{j \in I'}y_{n_j} \]
@@ -633,10 +636,13 @@ be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$.
 	\[ \deg_L z \le \sum_{j \in I \cup I'} \deg_L y_j = \sum_{j \in I \cup I'} [L : K_{n_j}] 
 	\deg_{K_{n_j}} y_{n_j} \ll TD^{2T}N \] 
 	which can be made smaller than $d = [\F_q(c) : \F_q]$ for some small $\eta$ and all 
-	sufficiently large $d$. This is not possible unless $z = 0$ which means that the $y_{n_j}$, $j 
-	\in I \cup I'$ are $\Z$-linearly dependent, which in turn contradicts Lemma 
-	\ref{lem:linear-ind}. Therefore, the number of distinct points $P_I$ is at least 
-	$\binom{\abs{J}}{T}$. Now the same calculation as in \cite{voloch2010} gives the desired result.
+	sufficiently large $d$. This is not possible unless $z = 0$ and so the $ \{ y_{n_j} \}_{j \in I 
+	\cup I'}$ are $\Z$-linearly dependent, which contradicts Lemma \ref{lem:linear-ind}. Therefore, 
+	the number of distinct points $P_I$ is at least $\binom{\abs{J}}{T}$. Setting $\epsilon 
+	\leftarrow \epsilon / 3$ in Lemma \ref{lem:coset} we get the same bound as in \cite{voloch2007}:
+	\[ \abs{J} \gg d^{2 - \epsilon / 3} / r - r^{\epsilon / 3} \gg d^{2\epsilon / 3}, \]
+	and $\binom{\abs{J}}{T} \ge (\abs{J} / T - 1)^T \gg \exp(\delta (\log d)^2)$ for some $\delta > 
+	0$.
 \end{proof}
 The logarithmic term $\log d$ in the exponent in Theorem \ref{theo:order-general} is forced by the 
 exponent $2T$ in the bound $TD^{2T}N$ obtained in the proof. For special cases of the irreducible 
@@ -650,7 +656,7 @@ obtain much better bounds on the order of $P$.
 \end{theorem}
 \begin{proof}
 	Let $X$ be an open subset of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$ defined by 
-	projection to the first coordinate. That is $f(P) = x_P$ for a point $P$ on $E$. A point $(P, 
+	projection to the first coordinate, that is $f(P) = x_P$ for any point $P$ on $E$. A point $(P, 
 	x_P)$ is in $X_n$ if $(P, x_P^n)$ is in $X$. Therefore, it is implied by the commutative digram
 	\begin{center}
 		\begin{tikzpicture}[>={Computer Modern Rightarrow[length = 5, width = 4]}]
@@ -679,14 +685,13 @@ order in $E$. For appropriate choices of $\epsilon$ in Theorem \ref{theo:order-e
 enough $\delta$, and hence $P$ of large order, without having to choose $d$ very large. Experiments 
 show, however, that the lower bound of the theorem is very far from optimal. 
 
-A closer look at the proof of \cite[Theorem 1.1]{voloch2010} shows that the point $P$ has order at 
+From the proof of Theorem \ref{theo:order-general} we see that the point $P$ has order at 
 least $\binom{\abs{J}}{T}$ where $\abs{J} \gg d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}$ and $T = 
 [d^\eta]$ for some $\eta > 0$. The bound $\exp(d^\delta)$ is just an approximation of the binomial 
 coefficient. In practice, we could ignore this approximation and use the value of the binomial 
 coefficient directly. Here, $\eta$ is a function of $\epsilon$ and can be calculated from the 
-inequality $\deg_L(\sum_{j \in I}y_{n_j} - \sum_{j \in I'}y_{n_j}) \ll TDN $ of Theorem 
-\ref{theo:order-general}. From this we can obtain the rough estimate $T \approx d^{2\epsilon} / 3$, 
-which gives $\eta \approx 2\epsilon$. 
+inequality $\deg_L(\sum_{j \in I}y_{n_j} - \sum_{j \in I'}y_{n_j}) \ll TDN $. From this we obtain 
+the rough estimate $T \approx d^{2\epsilon} / 3$ which gives $\eta \approx 2\epsilon$. 
 
 Let $r$ be a prime such that $p$ is a generator of $(\Z/r\Z)^*$. Then $q = p^2$ has order $d = 
 (r - 1) / 2$, and $d^{2 - \epsilon} > r$ for a wide range of values of $0 < \epsilon < 1$. Now the 
@@ -699,8 +704,8 @@ $r$ and optimize for $\epsilon$ so that
 \begin{equation}
 	\label{equ:binom}
 	\binom{\abs{J}}{T} \gg \binom{d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}}{d^{2\epsilon}} 
-	\approx \binom{r^{1 - \epsilon / 3} - r^{\epsilon / 3}}{\lfloor r / 2 \rfloor^{2\epsilon}} \ge 
-	2p + 2.
+	\approx \binom{\lfloor r / 2 \rfloor^{1 - \epsilon / 3} - r^{\epsilon / 3}}{\lfloor r / 2 
+	\rfloor^{2\epsilon}} \ge 2p + 2.
 \end{equation}
 It suffices to take $r \in O(\log p)$ and an appropriate $\epsilon$ to obtain the bound in 
 \eqref{equ:binom}. Then $P$ will have order large enough to imply that $\psi_p = 1$. 
@@ -825,16 +830,16 @@ get a random supersingular curve.
 		$\#\F_p$ (bits) & Alg. \ref{alg:ss-strong} & IsoGr & Alg. 
 		\ref{alg:ss-strong} & IsoGr \\
 		\midrule[0.7pt]
-		33 & 0.004 & 0.003 & 0.300 & 0.180 \\
-		65 & 0.007 & 0.006 & 0.608 & 0.595 \\
-		129 & 0.007 & 0.006 & 1.513 & 2.783 \\
-		257 & 0.019 & 0.012 & 3.710 & 12.59 \\
-		385 & 0.030 & 0.024 & 6.533 & 32.47 \\
-		513 & 0.049 & 0.039 & 10.13 & 67.66 \\
-		641 & 0.074 & 0.055 & 15.32 & 140.2 \\
-		769 & 0.135 & 0.084 & 27.91 & 256.4 \\
-		897 & 0.162 & 0.110 & 36.98 & 384.8 \\
-		1025 & 0.219 & 0.134 & 46.90 & 556.9 \\		
+		33 & 0.004 & 0.003 & 0.316 & 0.180 \\
+		65 & 0.007 & 0.006 & 0.673 & 0.595 \\
+		129 & 0.007 & 0.006 & 1.771 & 2.783 \\
+		257 & 0.019 & 0.012 & 4.734 & 12.59 \\
+		385 & 0.030 & 0.024 & 8.832 & 32.47 \\
+		513 & 0.049 & 0.039 & 14.21 & 67.66 \\
+		641 & 0.074 & 0.055 & 21.69 & 140.2 \\
+		769 & 0.135 & 0.084 & 37.08 & 256.4 \\
+		897 & 0.162 & 0.110 & 49.46 & 384.8 \\
+		1025 & 0.219 & 0.134 & 63.20 & 556.9 \\		
 		\midrule[0.7pt]
 	\end{tabular}
 	\caption{Experiments (times are in seconds)}
