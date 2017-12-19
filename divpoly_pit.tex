@@ -11,7 +11,6 @@
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{algpseudocode}
-%\usepackage{algorithm}
 \usepackage{enumitem}
 \usepackage{makecell}
 \usepackage{booktabs}
@@ -172,8 +171,11 @@ introduction on elliptic curves and other definitions for supersingulariy.
 It can be shown that the $j$-invariants of all supersingular elliptic curves $E / \overline{\F}_p$ 
 reside in the quadratic extension $\F_{p^2}$. Since isomorphism classes of elliptic curves are 
 uniquely determined by their $j$-invariant, it follows that every supersigular elliptic curve can 
-be defined over $\F_{p^2}$. So for the rest of this paper we assume $\F_q = \F_{p^2}$. We also 
-assume that $p > 3$.
+be defined over $\F_{p^2}$. So for the rest of this paper we assume $\F_q = \F_{p^2}$. Note that 
+an elliptic curve $E$ with $j(E) = 0$ (resp. $j(E) = 1728$) is supersingular if and only if $p = 2 
+\bmod 3$ (resp. $p = 3 \bmod 4$) \cite[Theorem 4.1.c]{silverman2009arithmetic}. Since there is only 
+one supersingular curve for $p = 2$ and $p = 3$, which has $j$-invariant $j = 0$, we assume that $p 
+> 3$. 
 
 Denote by $\MM(n)$ the cost of multiplying two polynomials of degree $n$ over $\F_q$ where the unit 
 cost is operations in $\F_q$. We can take $\MM(n) = O(n\log n \loglog n)$ \cite{vzGG}. We also 
@@ -207,13 +209,13 @@ If so, then $E$ is supersingular with probability at least $(p - 1) / p$ \cite[P
 2]{sutherland2012}, which is very close to 1 when $p$ is large. The cost of this test is 
 $\tildO(\log p)$ operations in $\F_p$ or $\tildO(\log^2 p)$ bit operations.
 
-The best known deterministic algorithm, up to the author's knowledge, is due to \cite{sutherland2012}. The 
-algorithm is based on traversing the isogeny graph of $E$, and it runs in $O(\log^3p \loglog^3p)$ 
-bit operations. In fact, the algorithm exploits an interesting structural difference between 
-isogeny graphs of ordinary and supersingular curves. For more details on the algorithm and on 
-isogeny graphs we refer the reader to \cite{sutherland2012, kohel1996}. In this paper, we propose 
-an algorithm that can efficiently check the supersingularity of $E$ using points of high order on 
-$E$. Our main result can be summarized as follows:
+The best known deterministic algorithm, up to the author's knowledge, is due to 
+\cite{sutherland2012}. The algorithm is based on traversing the isogeny graph of $E$, and it runs 
+in $O(\log^3p \loglog^3p)$ bit operations. In fact, the algorithm exploits an interesting 
+structural difference between isogeny graphs of ordinary and supersingular curves. For more details 
+on the algorithm and on isogeny graphs we refer the reader to \cite{sutherland2012, kohel1996}. In 
+this paper, we propose an algorithm that can efficiently check the supersingularity of $E$ using 
+points of high order on $E$. Our main result can be summarized as follows:
 \begin{theorem}
 	\label{theo:main}
 	Given an elliptic curve $E/\F_q$, there exists a Las Vegas algorithm that can efficiently 
@@ -276,6 +278,14 @@ can be defined using recursive relations as follows. Given $E: y^2 = x^3 + ax + 
 		\ge 2 \\
 		\psi_{2m} & = & (2y)^{-1}(\psi_{m + 2}\psi_{m - 1}^2 - \psi_{m - 2}\psi_{m + 1}^2)\psi_m 
 		\quad \text{for } m \ge 3.
+	\end{array}
+\end{equation}
+We also define the following polynomials that we will use in the subsequent sections.
+\begin{equation}
+\label{equ:divpoly-extra}
+	\begin{array}{rll}
+		\phi_m & = & x\psi_m^2 - \psi_{m + 1}\psi_{m - 1} \\
+		\omega_m & = & (4y)^{-1}(\psi_{m + 2}\psi_{m - 1}^2 - \psi_{m - 2}\psi_{m + 1}^2)
 	\end{array}
 \end{equation}
 It follows from the definition that a point $P \in E(\overline{\F}_p)$ is an $n$-torsion if and 
@@ -403,11 +413,10 @@ polynomial, $\deg \psi_p < (p^2 - 1) / 2$. In fact, for ordinary curves we have
 		(F^p, G^p) = \pi(F, G) = [p](x, y) = \left( \frac{\phi_p}{\psi_p^2}, 		
 		\frac{\omega_p}{\psi_p^3} \right).
 	\end{equation}
-	The last equality is the formula for multiplication by $p$, which is defined by division 
-	polynomials $\phi_n = x\psi_n^2 - \psi_{n + 1}\psi_{n - 1}$ and $\omega_n = (4y)^{-1}(\psi_{n + 
-	2}\psi_{n - 1}^2 - \psi_{n - 2}\psi_{n + 1}^2)$. It follows that $\psi_p$ is a $p$-th power. 
-	Since $\psi_p$ has roots exactly the abscissas of the nonzero $p$-torsion points it must have 
-	degree $p(p - 1) / 2$, which proves the first part.
+	The last equality is the formula for multiplication by $p$, where $\phi_p$ and $\omega_p$ are
+	defined using \eqref{equ:divpoly-extra}. It follows that $\psi_p$ is a $p$-th power. Since 
+	$\psi_p$ has roots exactly the abscissas of the nonzero $p$-torsion points it must have degree 
+	$p(p - 1) / 2$, which proves the first part.
 	
 	For the second part, note that the action of the Frobenius on $E[p]$ is just multiplication by 
 	the trace $t$. By the first part $\psi_p = \tilde{\psi}_p^p$ where $\tilde{\psi}_p$ splits into 
@@ -435,7 +444,7 @@ efficient algorithm based on points of high order is discussed in Section \ref{s
 Lemmas \ref{lem:ord_divpoly}, \ref{lem:ss_divpoly} and Lemma \ref{lemma:Schwartz-Zippel} give a 
 probabilistic algorithm for the PIT $\psi_p(x) = 1$: select a random element $a \in S = \F_q$ and 
 compute $\psi_p(a)$. If $\psi_p(a) = 1$ then the algorithm outputs ``supersingular'', otherwise it 
-outputs ``ordinary''. If $E$ is ordinary, then the output is supersingular with probability 
+outputs ``ordinary''. If $E$ is ordinary, then the output is ``supersingular'' with probability 
 \[ P[\psi_p(a) = 1] = P[\tilde{\psi}_p(a) = 1] \le (p - 1) / 2p^2 < 1 / 2p, \] 
 where $\psi_p = \tilde{\psi}_p^p$ as in Lemma \ref{lem:ord_divpoly}. The runtime of this algorithm 
 is $\tildO(\log p)$ operations in $\F_p$, which is the same as the Monte Carlo algorithm given in 
@@ -501,8 +510,9 @@ $P$ is chosen more carefully. More precisely, we have
 		\psi_{mn} = (\psi_m \circ [n])\psi_n^{m^2}.
 	\end{equation}
 	This follows from comparing divisors on both sides. When $k < r$ is odd, $\psi_k$ is a 
-	univariate polynomial and so $\psi_k(P)$ only involves the $x$-coordinate of $P$. So if $P \in 
-	E$ satisfies \eqref{equ:ss-strong} then $x_{pP} = x_{\pi P}$, and hence 
+	univariate polynomial and so $\psi_k(P)$ only involves the $x$-coordinate of $P$. Since $x_{pP} 
+	= \phi_p / \psi_p^2$ where $\phi_p$ is defined by \eqref{equ:divpoly-extra}, it follows that if 
+	$P \in E$ satisfies \eqref{equ:ss-strong} then $x_{pP} = x_{\pi P}$, and hence 
 	\begin{equation}
 	\label{equ:frob-p}
 		\psi_k(P)^{p^2} = \psi_k(\pi(P)) = \psi_k(pP).
