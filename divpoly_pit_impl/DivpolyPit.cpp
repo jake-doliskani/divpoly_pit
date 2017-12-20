@@ -18,19 +18,16 @@ bool DivpolyPit::isSupersingular(const ZZ_pE& a, const ZZ_pE& b) {
     this->a = a;
     this->b = b;
 
-    long d = 0;
-    long r = MIN_THREASHOLD;
-    ZZ p2 = sqr(ZZ_p::modulus());
+    long r = NumBits(ZZ_p::modulus());
+	r = r / (NumBits(r));
+	r = NextPrime(r);
 
     Util util;
     while (true) {
-        long a = rem(p2, r);
-        d = util.findOrder(a, r);
+        long d = rem(ZZ_p::modulus(), r);
+        d = util.findOrder(d, r);
 
-        if (pow(d, 2 - EPSILON) > r) {
-            // according to the paper and some empirical thresholds
-            // we should have r > MIN_THREASHOLD
-            r = max(MIN_THREASHOLD, (long) (EPSILON * d * d));
+        if (d == r - 1 && pow(d, 2 - EPSILON) > r) {
             break;
         }
 
@@ -96,11 +93,6 @@ bool DivpolyPit::solvePit(long r) {
 }
 
 void DivpolyPit::getCycloFactor(ZZ_pEX& factor, long r) {
-    ZZ p2 = sqr(ZZ_p::modulus());
-    long a = rem(p2, r);
-    Util util;
-    long d = util.findOrder(a, r);
-   
     ZZ_pEX cycloPoly;
     for (long i = 0; i < r; i++)
         SetCoeff(cycloPoly, i, 1);
@@ -113,9 +105,9 @@ void DivpolyPit::getCycloFactor(ZZ_pEX& factor, long r) {
     rem(temp, temp, cycloPoly);
 
     Vec<ZZ_pEX> factors;
-    EDF(factors, cycloPoly, temp, d);
+    EDF(factors, cycloPoly, temp, (r - 1) / 2);
 
-    conv(factor, factors[0]);
+    factor = factors[0];
 
     cycloPoly.kill();
     temp.kill();

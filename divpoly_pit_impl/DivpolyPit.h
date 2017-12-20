@@ -22,8 +22,7 @@ private:
     ZZ_pE a;
     ZZ_pE b;
     
-    const double EPSILON = 0.1;
-    const long MIN_THREASHOLD = 17;
+    const double EPSILON = 0.45;
 };
 
 #endif /* DIVPOLYPIT_H */
