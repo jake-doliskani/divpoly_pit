@@ -218,11 +218,15 @@ this paper, we propose an algorithm that can efficiently check the supersingular
 points of high order on $E$. Our main result can be summarized as follows:
 \begin{theorem}
 	\label{theo:main}
-	Given an elliptic curve $E/\F_q$, there exists a Las Vegas algorithm that can efficiently 
-	decide whether $E$ is supersingular or ordinary. The algorithm has average-case complexity 
-	$\tildO(\log p)$ operations in $\F_p$. Under the generalized Riemann hypothesis, the worst-case 
-	complexity of the algorithm is $\tildO(\log^2 p)$ operations in $\F_p$.
+	Given an elliptic curve $E/\F_q$, there exists a Las Vegas algorithm that can efficiently
+	decide whether $E$ is supersingular or ordinary. On input an ordinary curve the algorithm runs 
+	in an expected $\tildO(\log p)$ operations in $\F_p$. On input a supersingular curve, under the 
+	generalized Riemann hypothesis, the algorithm runs in an expected $\tildO(\log^2 p)$ operations 
+	in $\F_p$.
 \end{theorem}
+Note that, ignoring the logarithmic factors, our result does not asymptotically improve on the 
+state-of-the-art algorithm \cite{sutherland2012}. However, as our experiments in Section 
+\ref{sec:exper} show, our algorithm attains better runtimes in practice.
 
 \paragraph{Polynomial identity testing (PIT)}
 Given a field $K$, an arithmetic circuit with $n$ variables over $K$ is a directed acyclic graph with the 
@@ -768,10 +772,9 @@ constant. The theorem simply states that the density of primes for which a given
 primitive root is roughly $C(p)$. Theorem \ref{theo:main} follows from the following proposition.
 \begin{proposition}
 	\label{prop:ss-strong}
-	Algorithm \ref{alg:ss-strong} is correct and for a randomly selected curve $E/\F_q$ has 
-	average-case complexity $\tildO(\log p)$ operations in $\F_p$. Assuming the generalized Riemann 
-	hypothesis, the worst-case complexity of the algorithm is $\tildO(\log^2 p)$ operations in 
-	$\F_p$.
+	Algorithm \ref{alg:ss-strong} is correct, and on input an ordinary curve, runs in an expected 
+	$\tildO(\log p)$ operations in $\F_p$. On input a supersingular curve, assuming the generalized 
+	Riemann hypothesis, the algorithm runs in an expected $\tildO(\log^2 p)$ operations in $\F_p$.
 \end{proposition}
 \begin{proof}
 	Step \ref{step:ss-eval} is done using $\tildO(\log p)$ operations in $\F_p$ using Algorithm 
@@ -816,6 +819,7 @@ primitive root is roughly $C(p)$. Theorem \ref{theo:main} follows from the follo
 
 
 \section{Experiments}
+\label{sec:exper}
 
 We have implemented Algorithm \ref{alg:ss-strong} of this paper and Algorithm 2 of 
 \cite{sutherland2012} both in C++. The arithmetic in $\F_{p^2}[x]$ is done using the NTL library 
@@ -840,16 +844,16 @@ get a random supersingular curve.
 		$\#\F_p$ (bits) & Alg. \ref{alg:ss-strong} & IsoGr & Alg. 
 		\ref{alg:ss-strong} & IsoGr \\
 		\midrule[0.7pt]
-		33 & 0.004 & 0.003 & 0.316 & 0.180 \\
-		65 & 0.007 & 0.006 & 0.673 & 0.595 \\
-		129 & 0.007 & 0.006 & 1.771 & 2.783 \\
-		257 & 0.019 & 0.012 & 4.734 & 12.59 \\
-		385 & 0.030 & 0.024 & 8.832 & 32.47 \\
-		513 & 0.049 & 0.039 & 14.21 & 67.66 \\
-		641 & 0.074 & 0.055 & 21.69 & 140.2 \\
-		769 & 0.135 & 0.084 & 37.08 & 256.4 \\
-		897 & 0.162 & 0.110 & 49.46 & 384.8 \\
-		1025 & 0.219 & 0.134 & 63.20 & 556.9 \\		
+		33 & 0.004 & 0.003 & 0.118 & 0.180 \\
+		65 & 0.007 & 0.006 & 0.566 & 0.595 \\
+		129 & 0.007 & 0.006 & 1.074 & 2.783 \\
+		257 & 0.019 & 0.012 & 5.609 & 12.59 \\
+		385 & 0.030 & 0.024 & 19.87 & 32.47 \\
+		513 & 0.049 & 0.039 & 35.87 & 67.66 \\
+		641 & 0.074 & 0.055 & 102.1 & 140.2 \\
+		769 & 0.135 & 0.084 & 157.2 & 256.4 \\
+		897 & 0.162 & 0.110 & 224.2 & 384.8 \\
+		1025 & 0.219 & 0.134 & 322.1 & 556.9 \\		
 		\midrule[0.7pt]
 	\end{tabular}
 	\caption{Experiments (times are in seconds)}
@@ -859,9 +863,7 @@ get a random supersingular curve.
 The average times for each set of curves are listed in columns ``Ordinary" and ``Supersingular". 
 Columns ``Alg. 2" and ``IsoGr" refer to Algorithm 2 of Section \ref{sec:pit-for-div} 
 and the one in \cite{sutherland2012}, respectively. As the timings suggest, detecting ordinary 
-curves is substantially faster on average. In fact, the timings under the ``Ordinary" column 
-represent the average-case complexity of the algorithms while the ones under the ``Supersingular" 
-column represent the worst-case complexity.
+curves is substantially faster on average. 
 
 \paragraph{Acknowledgment}
 The Author would like to thank Felipe Voloch for his valuable feedback on Section 

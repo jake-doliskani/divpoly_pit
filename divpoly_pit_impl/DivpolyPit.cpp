@@ -19,8 +19,8 @@ bool DivpolyPit::isSupersingular(const ZZ_pE& a, const ZZ_pE& b) {
     this->b = b;
 
     long r = NumBits(ZZ_p::modulus());
-	r = r / (NumBits(r));
-	r = NextPrime(r);
+    r = r / 3;
+    r = NextPrime(r);
 
     Util util;
     while (true) {
