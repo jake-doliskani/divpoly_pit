@@ -211,7 +211,7 @@ $\tildO(\log p)$ operations in $\F_p$ or $\tildO(\log^2 p)$ bit operations.
 
 The best known deterministic algorithm, up to the author's knowledge, is due to 
 \cite{sutherland2012}. The algorithm is based on traversing the isogeny graph of $E$, and it runs 
-in $O(\log^3p \loglog^3p)$ bit operations. In fact, the algorithm exploits an interesting 
+in $O(\log^3p \loglog^2p)$ bit operations. In fact, the algorithm exploits an interesting 
 structural difference between isogeny graphs of ordinary and supersingular curves. For more details 
 on the algorithm and on isogeny graphs we refer the reader to \cite{sutherland2012, kohel1996}. In 
 this paper, we propose an algorithm that can efficiently check the supersingularity of $E$ using 
@@ -361,7 +361,7 @@ We shall only need modular computation of division polynomials in this paper. Th
 		$r = 4, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 100$ \\
 		$r = 5, s = 3$~ if~ $b_kb_{k - 1}b_{k - 2} = 101$
 		\State Set $j = r$, and compute $f_{j - 3}, \dots, f_{j + 5} \pmod{f}$
-		\For {$i = s$ down to $0$}\label{step:divpoly-loop} 
+		\For {$i = k - s$ down to $0$}\label{step:divpoly-loop} 
 			\State Compute $f_{2j + b_i - 3}, \dots, f_{2j + b_i + 5} \pmod{f}$ from $f_{j - 3}, 
 			\dots, f_{j + 5}$ using relations \eqref{equ:divpoly3}
 			\State $j \leftarrow 2j + b_i$
