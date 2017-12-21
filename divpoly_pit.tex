@@ -121,7 +121,6 @@
 
 \date{}
 
-\setlength{\parindent}{0pt}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,14 +224,14 @@ points of high order on $E$. Our main result can be summarized as follows:
 	in $\F_p$.
 \end{theorem}
 Note that, ignoring the logarithmic factors, our result does not asymptotically improve on the 
-state-of-the-art algorithm \cite{sutherland2012}. However, as our experiments in Section 
+state-of-the-art algorithm \cite{sutherland2012}. However, as experiments in Section 
 \ref{sec:exper} show, our algorithm attains better runtimes in practice.
 
 \paragraph{Polynomial identity testing (PIT)}
-Given a field $K$, an arithmetic circuit with $n$ variables over $K$ is a directed acyclic graph with the 
-leaves considered as input variables and the root as output. The operations on the input, which are 
-implemented by the internal nodes (gates), consist of only addition and multiplication in $K$. 
-Here, the edges act as wires. Therefore, a circuit implements a polynomial function in $K[x_1, 
+Given a field $K$, an arithmetic circuit with $n$ variables over $K$ is a directed acyclic graph 
+with the leaves considered as input variables and the root as output. The operations on the input, 
+which are implemented by the internal nodes (gates), consist of only addition and multiplication in 
+$K$. Here, the edges act as wires. Therefore, a circuit implements a polynomial function in $K[x_1, 
 \dots, x_n]$. The size of a circuit $C$ is defined as the number of gates in $C$. The polynomial 
 identity testing can be formally stated as: 
 
@@ -699,16 +698,16 @@ order in $E$. For appropriate choices of $\epsilon$ in Theorem \ref{theo:order-e
 enough $\delta$, and hence $P$ of large order, without having to choose $d$ very large. Experiments 
 show, however, that the lower bound of the theorem is very far from optimal. 
 
-From the proof of Theorem \ref{theo:order-general} we see that the point $P$ has order at 
-least $\binom{\abs{J}}{T}$ where $\abs{J} \gg d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}$ and $T = 
+From the proof of Theorem \ref{theo:order-general} we see that the point $P$ has order at least 
+$\binom{\abs{J}}{T}$ where $\abs{J} \gg d^{2 - \epsilon / 3} / r - r^{\epsilon / 3}$ and $T = 
 [d^\eta]$ for some $\eta > 0$. The bound $\exp(d^\delta)$ is just an approximation of the binomial 
 coefficient. In practice, we could ignore this approximation and use the value of the binomial 
 coefficient directly. Here, $\eta$ is a function of $\epsilon$ and can be calculated from the 
 inequality $\deg_L(\sum_{j \in I}y_{n_j} - \sum_{j \in I'}y_{n_j}) \ll TDN $. From this we obtain 
 the rough estimate $T \approx d^{2\epsilon} / 3$ which gives $\eta \approx 2\epsilon$. 
 
-Let $r$ be a prime such that $p$ is a generator of $(\Z/r\Z)^*$. Then $q = p^2$ has order $d = 
-(r - 1) / 2$, and $d^{2 - \epsilon} > r$ for a wide range of values of $0 < \epsilon < 1$. Now the 
+Let $r$ be a prime such that $p$ is a generator of $(\Z/r\Z)^*$. Then $q = p^2$ has order $d = (r - 
+1) / 2$, and $d^{2 - \epsilon} > r$ for a wide range of values of $0 < \epsilon < 1$. Now the 
 $r$-th cyclotomic polynomial $\Phi_r(T)$ splits into two irreducible factors of degree $d$ over 
 $\F_q$. Let $g(T)$ be one of the factors so that $K = \F_q[T]/g(T)$ is a field, and let $t$ be the 
 image of $T$ in $K$. A point $P \in E$ with first coordinate $t$ lies in $E(F)$ where $[F : K] \le 
@@ -830,10 +829,10 @@ $\F_p$. The first row is the size of a randomly selected prime $p$ in bits.
 For each prime, we have generated 10 random ordinary and 10 random supersingular curves using Sage 
 \cite{stein2008sage}. Since most of the elliptic curves $E/\F_q$ are ordinary, generating random 
 ordinary curves amounts to simply choosing random coefficients $a, b$ for the Weierstrass equation. 
-Generating supersingular curves can be efficiently done using the Complex Multiplication 
-method in \cite{broker2009}. As pointed out in \cite{sutherland2012}, one can start from a curve 
-constructed by the method of \cite{broker2009} and take a random walk in the $2$-isogeny graph to 
-get a random supersingular curve.
+Generating supersingular curves can be efficiently done using the Complex Multiplication method in 
+\cite{broker2009}. As pointed out in \cite{sutherland2012}, one can start from a curve constructed 
+by the method of \cite{broker2009} and take a random walk in the $2$-isogeny graph to get a random 
+supersingular curve.
 
 \begin{table}
 	\centering
@@ -861,9 +860,11 @@ get a random supersingular curve.
 \end{table}
 
 The average times for each set of curves are listed in columns ``Ordinary" and ``Supersingular". 
-Columns ``Alg. 2" and ``IsoGr" refer to Algorithm 2 of Section \ref{sec:pit-for-div} 
-and the one in \cite{sutherland2012}, respectively. As the timings suggest, detecting ordinary 
-curves is substantially faster on average. 
+Columns ``Alg. 2" and ``IsoGr" refer to Algorithm 2 of Section \ref{sec:pit-for-div} and the one in 
+\cite{sutherland2012}, respectively. As the timings suggest, complexities of the two algorithms 
+differ only by a constant factor, which confirms the theory. Also detecting ordinary curves is 
+substantially faster on average than detecting supersingular curves, which again confirms the 
+complexities claimed in Proposition \ref{prop:ss-strong}. 
 
 \paragraph{Acknowledgment}
 The Author would like to thank Felipe Voloch for his valuable feedback on Section 
