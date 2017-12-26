@@ -11,6 +11,7 @@
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{algpseudocode}
+\usepackage{algorithm}
 \usepackage{enumitem}
 \usepackage{makecell}
 \usepackage{booktabs}
@@ -88,28 +89,6 @@
 \def\euler{\ensuremath{\varphi}}
 
 
-% allow algorithms to split over multiple pages
-\makeatletter
-\newcounter{algorithm}
-\setcounter{algorithm}{0}
-\renewcommand{\thealgorithm}{\arabic{algorithm}}
-\def\algorithm{\@ifnextchar[{\@algorithma}{\@algorithmb}}
-\def\@algorithma[#1]{%
-	\refstepcounter{algorithm}
-	\trivlist
-	\leftmargin\z@
-	\itemindent\z@
-	\labelsep\z@
-	\item[\parbox{\columnwidth}{%
-		\hrule
-		\hrule
-		\noindent\strut\textbf{Algorithm \thealgorithm} #1
-		\hrule
-	}]\hfil\vskip0em%
-}
-\def\@algorithmb{\@algorithma[]}
-\def\endalgorithm{\hfil\vskip-1em\hrule\endtrivlist}
-\makeatother
 
 
 
@@ -198,7 +177,7 @@ mind is then to compute $t$ by counting the number of points on $E$, and test th
 An efficient deterministic point counting algorithm is due to \cite{schoof85}, which takes 
 $\tildO(\log^5 p)$ bit operations. The notation $\tildO$ means ignoring logarithmic factors in the 
 main complexity parameter. A Las Vegas variant of Schoof's algorithm, called SEA, was proposed by 
-Elkies and Atkin. Under some heuristic assumption, the SEA algorithm runs in expected 
+Elkies and Atkin. Under some heuristic assumption, the SEA algorithm runs in an expected 
 $\tildO(\log^4p)$ bit operations.  
 
 If one is content with a high-probability output then a simple \textit{Monte Carlo} test can be 
@@ -218,14 +197,18 @@ points of high order on $E$. Our main result can be summarized as follows:
 \begin{theorem}
 	\label{theo:main}
 	Given an elliptic curve $E/\F_q$, there exists a Las Vegas algorithm that can efficiently
-	decide whether $E$ is supersingular or ordinary. On input an ordinary curve the algorithm runs 
+	decide whether $E$ is supersingular or ordinary. On input an ordinary curve, the algorithm runs 
 	in an expected $\tildO(\log p)$ operations in $\F_p$. On input a supersingular curve, under the 
 	generalized Riemann hypothesis, the algorithm runs in an expected $\tildO(\log^2 p)$ operations 
 	in $\F_p$.
 \end{theorem}
 Note that, ignoring the logarithmic factors, our result does not asymptotically improve on the 
 state-of-the-art algorithm \cite{sutherland2012}. However, as experiments in Section 
-\ref{sec:exper} show, our algorithm attains better runtimes in practice.
+\ref{sec:exper} show, our algorithm attains better runtimes in practice. There is conjecture of 
+Poonen, discussed in Section \ref{sec:pit-h-order}, about orders of points in subvarieties of 
+semiabelian varieties. If the conjecture holds, our algorithm runs in an expected $\tildO(\log p)$ 
+operations in $\F_p$. This is a significant improvement on the algorithm of \cite{sutherland2012} 
+both in theory and in practice.
 
 \paragraph{Polynomial identity testing (PIT)}
 Given a field $K$, an arithmetic circuit with $n$ variables over $K$ is a directed acyclic graph 
@@ -349,7 +332,8 @@ From the indices involved in the above relations it is immediate that given $f_{
 We shall only need modular computation of division polynomials in this paper. Therefore, Algorithm 
 \ref{alg:divpoly-comp} performs computations mod $f$ for a given polynomial $f \in \F_q[x]$.
 
-\begin{algorithm}[Division polynomial computation]
+\begin{algorithm}[H]
+	\caption{Division polynomial computation}
 	\label{alg:divpoly-comp}
 	\begin{algorithmic}[1]
 		\Require Integer $m \ge 1$, and polynomial $f(x) \in \F_q[x]$ of degree $n$
@@ -723,7 +707,8 @@ $r$ and optimize for $\epsilon$ so that
 It suffices to take $r \in O(\log p)$ and an appropriate $\epsilon$ to obtain the bound in 
 \eqref{equ:binom}. Then $P$ will have order large enough to imply that $\psi_p = 1$. 
 
-\begin{algorithm}[Testing supersingularity]
+\begin{algorithm}[H]
+	\caption{Testing supersingularity}
 	\label{alg:ss-strong}
 	\begin{algorithmic}[1]
 		\Require An elliptic curve $E$ over $\F_q$
@@ -824,7 +809,7 @@ We have implemented Algorithm \ref{alg:ss-strong} of this paper and Algorithm 2 
 \cite{sutherland2012} both in C++. The arithmetic in $\F_{p^2}[x]$ is done using the NTL library 
 \cite{shoup2001ntl}. The timings are obtained on a single core of an AMD FX(tm)-8120 at 1.4GHz on a 
 Linux machine. Table \ref{table:exper} compares the runtimes for different sizes of the base field 
-$\F_p$. The first row is the size of a randomly selected prime $p$ in bits. 
+$\F_p$. The first column is the size of a randomly selected prime $p$ in bits. 
 
 For each prime, we have generated 10 random ordinary and 10 random supersingular curves using Sage 
 \cite{stein2008sage}. Since most of the elliptic curves $E/\F_q$ are ordinary, generating random 
@@ -837,22 +822,22 @@ supersingular curve.
 \begin{table}
 	\centering
 	\small
-	\begin{tabular}{ccccc}
-		& \multicolumn{2}{c}{\bfseries Ordinary} & \multicolumn{2}{c}{\bfseries Supersingular} \\
-		\cmidrule(lr){2-3} \cmidrule(lr){4-5} 
-		$\#\F_p$ (bits) & Alg. \ref{alg:ss-strong} & IsoGr & Alg. 
+	\begin{tabular}{cccccc}
+		& & \multicolumn{2}{c}{\bfseries Ordinary} & \multicolumn{2}{c}{\bfseries Supersingular} \\
+		\cmidrule[0.7pt](r){3-4} \cmidrule[0.7pt](l){5-6} 
+		$\#\F_p$ (bits) & Sage pt-cnt & Alg \ref{alg:ss-strong} & IsoGr & Alg 
 		\ref{alg:ss-strong} & IsoGr \\
 		\midrule[0.7pt]
-		33 & 0.004 & 0.003 & 0.118 & 0.180 \\
-		65 & 0.007 & 0.006 & 0.566 & 0.595 \\
-		129 & 0.007 & 0.006 & 1.074 & 2.783 \\
-		257 & 0.019 & 0.012 & 5.609 & 12.59 \\
-		385 & 0.030 & 0.024 & 19.87 & 32.47 \\
-		513 & 0.049 & 0.039 & 35.87 & 67.66 \\
-		641 & 0.074 & 0.055 & 102.1 & 140.2 \\
-		769 & 0.135 & 0.084 & 157.2 & 256.4 \\
-		897 & 0.162 & 0.110 & 224.2 & 384.8 \\
-		1025 & 0.219 & 0.134 & 322.1 & 556.9 \\		
+		33 &  & 0.004 & 0.003 & 0.118 & 0.180 \\
+		65 &  &  0.007 & 0.006 & 0.566 & 0.595 \\
+		129 &  &  0.007 & 0.006 & 1.074 & 2.783 \\
+		257 &  &  0.019 & 0.012 & 5.609 & 12.59 \\
+		385 &  &  0.030 & 0.024 & 19.87 & 32.47 \\
+		513 &  &  0.049 & 0.039 & 35.87 & 67.66 \\
+		641 &  &  0.074 & 0.055 & 102.1 & 140.2 \\
+		769 &  &  0.135 & 0.084 & 157.2 & 256.4 \\
+		897 &  &  0.162 & 0.110 & 224.2 & 384.8 \\
+		1025 &  &  0.219 & 0.134 & 322.1 & 556.9 \\		
 		\midrule[0.7pt]
 	\end{tabular}
 	\caption{Experiments (times are in seconds)}
@@ -860,11 +845,16 @@ supersingular curve.
 \end{table}
 
 The average times for each set of curves are listed in columns ``Ordinary" and ``Supersingular". 
-Columns ``Alg. 2" and ``IsoGr" refer to Algorithm 2 of Section \ref{sec:pit-for-div} and the one in 
-\cite{sutherland2012}, respectively. As the timings suggest, complexities of the two algorithms 
-differ only by a constant factor, which confirms the theory. Also detecting ordinary curves is 
-substantially faster on average than detecting supersingular curves, which again confirms the 
-complexities claimed in Proposition \ref{prop:ss-strong}. 
+Columns ``Alg. \ref{alg:ss-strong}" and ``IsoGr" refer to Algorithm \ref{alg:ss-strong} of Section 
+\ref{sec:pit-h-order} and the one in \cite{sutherland2012}, respectively. As the timings suggest, 
+complexities of the two algorithms differ only by a constant factor, which confirms the theory. 
+Also detecting ordinary curves is substantially faster on average than detecting supersingular 
+curves, which again confirms the complexities claimed in Proposition \ref{prop:ss-strong}. 
+
+The second column shows timings for the point counting algorithm in Sage 7.5.1. The 
+supersingularity test in sage is done using a call to the point counting subroutine. Since Sage 
+performs naive point counting over the extension $\F_q$, we have used the more efficient underlying 
+subroutine \verb|_pari_().ellsea()| from PARI \cite{Pari}. 
 
 \paragraph{Acknowledgment}
 The Author would like to thank Felipe Voloch for his valuable feedback on Section 
