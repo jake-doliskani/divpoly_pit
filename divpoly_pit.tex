@@ -19,7 +19,11 @@
 \usepackage{authblk}
 \usetikzlibrary{positioning, arrows}
 \usetikzlibrary{arrows.meta}
+\usepackage[T1]{fontenc}
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
 
+\urlstyle{same}
 
 
 \hypersetup{
@@ -52,7 +56,6 @@
 \newcommand{\ang}[1]{\langle#1\rangle}
 \newcommand{\abs}[1]{\left\vert#1\right\vert}
 \newcommand{\dual}[1]{\overline{#1}}
-\newcommand{\mapsfrom}{\ensuremath{\reflectbox{$\mapsto$}}}
 \newcommand{\tildO}{\tilde{O}}
 
 % roman numerals
@@ -78,12 +81,12 @@
 \DeclareMathOperator{\rev}{rev}
 \DeclareMathOperator{\Hom}{Hom}
 
-\def\Q{\ensuremath{\mathbb{Q}}}
-\def\N{\ensuremath{\mathbb{N}}}
-\def\R{\ensuremath{\mathbb{R}}}
-\def\Z{\ensuremath{\mathbb{Z}}}
-\def\F{\ensuremath{\mathbb{F}}}
-\def\P{\ensuremath{\mathbb{P}}}
+\def\Q{\ensuremath{\varmathbb{Q}}}
+\def\N{\ensuremath{\varmathbb{N}}}
+\def\R{\ensuremath{\varmathbb{R}}}
+\def\Z{\ensuremath{\varmathbb{Z}}}
+\def\F{\ensuremath{\varmathbb{F}}}
+\def\P{\ensuremath{\varmathbb{P}}}
 \def\MM{\ensuremath{\mathsf{M}}}
 \def\CC{\ensuremath{\mathsf{C}}}
 \def\euler{\ensuremath{\varphi}}
@@ -528,11 +531,12 @@ abscissas of the points $kP$. But the univariate polynomial $\tilde{\psi}_p$ has
 that $\tilde{\psi}_p^p = 1$, and hence $\psi_p = 1$. It only remains to efficiently find a point of 
 high order on $E$. For this, we adapt the approach of Voloch \cite{voloch2007,voloch2010}.
 
-Let $\mathbb{G}_m$ be the multiplicative group over $\F_q$. In \cite{voloch2010}, elements of high 
+Let $\varmathbb{G}_m$ be the multiplicative group over $\F_q$. In \cite{voloch2010}, elements of 
+high 
 order in $\F_q^*$ are obtained using points on a curve contained in the fibered product $E \times 
-\mathbb{G}_m$. We can use the same technique to obtain points of high order on $E$. The proofs 
+\varmathbb{G}_m$. We can use the same technique to obtain points of high order on $E$. The proofs 
 remain essentially the same except for some parts which we explain in the following. We fix an 
-embedding $\mathbb{G}_m \hookrightarrow \P^1$ and assume all curves are projective.
+embedding $\varmathbb{G}_m \hookrightarrow \P^1$ and assume all curves are projective.
 
 Let $X$ be an absolutely irreducible curve contained in $E \times \P^1$. Also assume that $X$ 
 has non-constant projections to both factors and denote by $D$ the degree of $X \rightarrow \P^1$. 
@@ -598,7 +602,7 @@ Following the notation of \cite{voloch2010}, for a function field $L/\F_q$ we de
 be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$.
 \begin{theorem}
 	\label{theo:order-general}
-	Let $X \subset E \times \mathbb{G}_m$ be an absolutely irreducible curve over $\F_q$ with 
+	Let $X \subset E \times \varmathbb{G}_m$ be an absolutely irreducible curve over $\F_q$ with 
 	non-constant projections to both factors. Given $\epsilon > 0$ there exists $\delta > 0$ such 
 	that if $(P, b) \in X$ satisfies
 	\begin{enumerate}[leftmargin = *, labelsep = *, align = left, itemsep = -0.1cm, font = 
@@ -616,10 +620,11 @@ be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$.
 	root of unity such that $c^\gamma = b$. For an integer $n \le N$ with $(n , q) = 1$ and $n 
 	\bmod r \in \Gamma$ we have, by construction, $n \equiv \gamma q^j \bmod r$ for some $j$. Let 
 	$J$ be the set of $j$'s obtained for all such $n$. For simplicity, denote also by $\pi$ the 
-	$\F_q$-Frobenius map on $E \times \mathbb{G}_m$. Then for $j \in J$ we have
+	$\F_q$-Frobenius map on $E \times \varmathbb{G}_m$. Then for $j \in J$ we have
 	\[ \pi^j(P, b) = (\pi^j(P), \pi^j(b)) = (\pi^j(P), b^{q^j}) = (\pi^j(P), c^{n_j}) \]
 	where $n_j$ corresponds to $j$, that is $n_j \le N$, $(n_j, q) = 1$, $n_j \bmod r \in 
-	\Gamma$ and $n_j \equiv \gamma q^j \bmod r$. This means that there is a place of $K_{n_j}$ above 
+	\Gamma$ and $n_j \equiv \gamma q^j \bmod r$. This means that there is a place of $K_{n_j}$ 
+above 
 	$c$ where $y_{n_j}$ takes the value $\pi^j(P)$. 
 	
 	For a subset $I \subset J$ define $P_I = \sum_{j \in I}\pi^j(P)$. Note that $P_I$ is in 
@@ -642,16 +647,19 @@ be the degree of the divisor of zeros of $z$ in $L$. So $\deg_{K_n}y_n \ll n$.
 \end{proof}
 The logarithmic term $\log d$ in the exponent in Theorem \ref{theo:order-general} is forced by the 
 exponent $2T$ in the bound $TD^{2T}N$ obtained in the proof. For special cases of the irreducible 
-curve $X$, e.g. an open subset of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$, we can 
+curve $X$, e.g. an open subset of the graph of a morphism $f: E \rightarrow \varmathbb{P}^1$, we 
+can 
 obtain much better bounds on the order of $P$.  
 \begin{theorem}
 	\label{theo:order-ell}
-	Let $E/\F_q$ be an elliptic curve and let $f: E \rightarrow \mathbb{P}^1$ be the projection to 
+	Let $E/\F_q$ be an elliptic curve and let $f: E \rightarrow \varmathbb{P}^1$ be the projection 
+to 
 	the first coordinate. Then with the assumptions of Theorem \ref{theo:order-general} and with 
 	$X$ as an open subset of the graph of $f$, the point $P$ has order at least $\exp(d^\delta)$.
 \end{theorem}
 \begin{proof}
-	Let $X$ be an open subset of the graph of a morphism $f: E \rightarrow \mathbb{P}^1$ defined by 
+	Let $X$ be an open subset of the graph of a morphism $f: E \rightarrow \varmathbb{P}^1$ defined 
+by 
 	projection to the first coordinate, that is $f(P) = x_P$ for any point $P$ on $E$. A point $(P, 
 	x_P)$ is in $X_n$ if $(P, x_P^n)$ is in $X$. Therefore, it is implied by the commutative digram
 	\begin{center}
